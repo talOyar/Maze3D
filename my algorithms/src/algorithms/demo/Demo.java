@@ -45,7 +45,7 @@
 //		System.out.println(searcher.getNumberOfNodesEvaluated());
 //		System.out.println(searcher2.getNumberOfNodesEvaluated());
 //
-//		
+//		//TEST IF COMMIT IS POSSIBLE*^%&$^$%$!%^#&$
 //	}
 //	
 //}
