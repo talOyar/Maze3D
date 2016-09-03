@@ -1,21 +1,60 @@
 
 package algorithms.mazeGenerators;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class Maze3d {
-	
 private int rows;
 private int cols;
 private int levels;
-
+private byte[] mazeAsBytes=null;
 private int[][][] maze;
 private Position startPosition;
 private Position goalPosition;
 public final int PATH=0; 
 public final int WALL=1; 
 
+
+public Maze3d(byte[] mazeAsBytes) {
+	this.setMazeAsBytes(mazeAsBytes);
+	
+	ByteArrayInputStream in=new ByteArrayInputStream(mazeAsBytes);
+	DataInputStream data=new DataInputStream(in);
+
+	try {
+		//get the sizes of the maze
+		levels=data.readInt();
+		rows=data.readInt();
+		cols=data.readInt();
+		
+		// get and set the start position
+
+		setStartPosition(new Position(data.readInt(),data.readInt(),data.readInt()));
+		
+		// get and set the goal position
+		setGoalPosition(new Position(data.readInt(),data.readInt(),data.readInt()));
+		maze = new int[this.levels][this.rows][this.cols];
+		//save the maze
+		for(int i=0;i<levels;i++){
+			for(int j=0;j<rows;j++){
+				for(int k=0;k<cols;k++){
+					maze[i][j][k]=data.readInt();
+				}
+			}
+		}
+		
+		
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+}
 
 public Maze3d(int level, int row, int col) {
 	this.rows=row*2+1;
@@ -63,29 +102,6 @@ public Position getGoalPosition() {
 public void setGoalPosition(Position goalPos) {
 	this.goalPosition = goalPos;
 }
-
-public void print(){
-	
-	for(int i=0;i<levels;i++)
-	{
-		for(int j=0;j<rows;j++){
-			for(int k=0;k<cols;k++){
-				if((i==goalPosition.x && j==goalPosition.y && k==goalPosition.z))
-					System.out.print("g"+" ");
-				else if(i==startPosition.x && j==startPosition.y && k==startPosition.z)
-					System.out.print("s"+" ");
-				else
-				System.out.print(getCellVal(i,j,k )+" ");
-			}
-			System.out.print("\n");
-					
-		}
-		System.out.print("\n");
-}
-	System.out.println("start position:"+startPosition);
-	System.out.println("goal position:"+goalPosition);
-}
-
 public int getCellVal(int level,int row,int col){
 	return maze[level][row][col];
 	
@@ -212,7 +228,7 @@ public Directions checkDown(Position p){
 	return null;
 	
 }	
-public int[][] getCrossSectionByX(int x){
+public int[][] getCrossSectionByX(int x) throws IndexOutOfBoundsException{
 	
 	int[][] getCrossByX;
 	if(x<0 || x> levels-1)
@@ -225,7 +241,7 @@ public int[][] getCrossSectionByX(int x){
 	
 	return getCrossByX ;
 }
-public int[][] getCrossSectionByY(int y){
+public int[][] getCrossSectionByY(int y) throws IndexOutOfBoundsException{
 	
 	int[][] getCrossByY=new int[levels][cols];
 	if(y<0 || y> rows-1)
@@ -241,7 +257,7 @@ public int[][] getCrossSectionByY(int y){
 	
 
 }
-public int[][] getCrossSectionByZ(int z){	
+public int[][] getCrossSectionByZ(int z) throws IndexOutOfBoundsException{	
 	int[][] getCrossByZ=new int[levels][rows];
 	if(z<0 || z> cols-1)
 		throw new IndexOutOfBoundsException("The input of z is not valid!");
@@ -325,4 +341,54 @@ public String toString() {
 	}
 	return sb.toString();
 }
+	
+	
+	
+
+public byte[] toByteArray(){
+	ByteArrayOutputStream out=new ByteArrayOutputStream();
+	DataOutputStream data=new DataOutputStream(out);
+	
+	try { //Surround the data writing with try catch block
+		
+		//save maze size data
+		data.writeInt(levels);
+		data.writeInt(rows);
+		data.writeInt(cols);
+		//save start position
+		data.writeInt(startPosition.x);
+		data.writeInt(startPosition.y);
+		data.writeInt(startPosition.z);
+		//save goal position
+		data.writeInt(goalPosition.x);
+		data.writeInt(goalPosition.y);
+		data.writeInt(goalPosition.z);
+		
+		//save the maze
+		
+		for(int i=0;i<levels;i++){
+			for(int j=0;j<rows;j++){
+				for(int k=0;k<cols;k++){
+					data.writeInt(maze[i][j][k]);
+				}
+			}
+		}
+		
+	} catch (IOException e) {// throw exception
+		System.out.println("IO exception!");
+		e.printStackTrace();
+	}
+	return out.toByteArray();
+	
+}
+
+public byte[] getMazeAsBytes() {
+	return mazeAsBytes;
+}
+
+public void setMazeAsBytes(byte[] mazeAsBytes) {
+	this.mazeAsBytes = mazeAsBytes;
+}
+
+
 }
