@@ -3,41 +3,44 @@ package io;
 import java.io.IOException;
 import java.io.OutputStream;
 
+
 public class MyCompressorOutputStream extends OutputStream {
-	
-	byte[] b=null;
-
 	OutputStream out;
-	byte[] comprresedByte;
-	public MyCompressorOutputStream(OutputStream out, byte[] b) {
-		super();
-		this.out = out;
-		this.b=b;
-	}
 	
-
+byte[] comprresedByte;
+	public MyCompressorOutputStream(OutputStream out, byte[] b) {
+		this.out = out;
+		
+	}
 	
 	@Override
 	public void write(byte[] b) throws IOException {
-		int counter=0;
-		for(int i=0;i<b.length;i++){
-			if(i<=9)
-			{
-				write(b[i]);
-			}	
-			else{
+		int counter=1;
+		byte cuurByte = b[0];
+					
+		for(int i=1;i<b.length;i++){
+			
+			if(cuurByte != b[i]){
 				
-			if(b[i]==b[i-1]){
+			while(counter >= 255){
+				out.write(255);
+				out.write(cuurByte);
+				counter -=255;
+				}
+			out.write(counter);
+			out.write(cuurByte);
+			counter=1;
+			 cuurByte = b[i];
+			}
+			else 
 				counter++;
 			}
-			else{
-				write(counter);
-				write(b[i]);
-			}
+		
+		out.write(counter);
+		out.write(cuurByte);
 		}
-		}	
-	}
-
+	
+	
 	@Override
 	public void write(int b) throws IOException {
 		out.write(b);

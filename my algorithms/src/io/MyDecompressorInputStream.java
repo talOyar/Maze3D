@@ -13,8 +13,21 @@ public class MyDecompressorInputStream extends InputStream {
 
 	@Override
 	public int read() throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		return in.read();
 	}
+	
+	public int read(byte[] arr) throws IOException {
+		int k = 0;
+		while (k < arr.length) {
+			byte count = (byte) in.read();
+			byte b = (byte) in.read();
+				
+			for (int j = 0; j < count; j++) {
+				arr[k++] = b;
+			}
+		}
+		return arr.length;	
+		}
+	}
+		
 
-}

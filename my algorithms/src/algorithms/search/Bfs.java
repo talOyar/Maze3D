@@ -10,7 +10,7 @@ import java.util.HashSet;
  * <p> overriding the search method
  * @param <T> this is the generic parameter whice used to implement the searcher.
  * 
- * @author Tal Oyar
+ * @author Tal Oyar & tomer cohen 
  * @version 1.0
  * @since 2016-08-30
  * 
@@ -36,7 +36,7 @@ public class Bfs<T> extends CommonSearcher<T> {
 		openList.add(startState);
 		
 		while(!openList.isEmpty()){ // while the open list is not empty- continue.
-			State<T> currentState=openList.poll();// each iteration we remove the best state from openlist
+			State<T> currentState=openList.poll();// each iteration we remove the best state from open list
 			evaluatedNodes++; //promoting the nodes number by 1 each iteration 
 			closedList.add(currentState); //adding the current state to the close list
 			State<T> goalState  = s.getGoalState();

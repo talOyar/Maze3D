@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 /** 
- *<h1>abstract class commonSearcher</h1>
+ *<h2>abstract class commonSearcher</h2>
  *<p> implements searcher interface
  *<p>overriding the method getNumberOfNodesEvaluated
  *<p> methods needs to be override- search.

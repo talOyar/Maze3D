@@ -22,7 +22,7 @@ public class GrowingTreeGenerator extends Generator implements Maze3dGenerator {
 	@Override
 	
 	public Maze3d generate(int levels, int rows, int cols) {
-		//create a new maze
+	//create a new maze
 	maze=new Maze3d(levels, rows, cols);
 	//set all maze as walls(1)
 	maze.setMazeAsWalls();
