@@ -11,7 +11,7 @@ import algorithms.search.Dfs;
 import algorithms.search.Searcher;
 import algorithms.search.Solution;
 /**
- * <h2>Demo class<h2>
+ * <h2>Demo class<h2> 
  * <p> The Demo class generate a 3d maze then test the BFS and DFS search algorithm
  * and return the  solution
  * @author Tal Oyar & Tomer Cohen
