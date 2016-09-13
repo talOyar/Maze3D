@@ -1,11 +1,12 @@
 package controller;
 
+import java.io.File;
+
 import java.util.HashMap;
 
 
 import algorithms.mazeGenerators.Maze3d;
 import model.Model;
-import model.MyModel;
 import view.View;
 
 public class CommandsManager {
@@ -22,7 +23,9 @@ public class CommandsManager {
 		HashMap<String, Command> commands = new HashMap<String, Command>();
 		commands.put("generate_maze", new GenerateMazeCommand());
 		commands.put("display", new DisplayMazeCommand());
+		commands.put("Directory", new getPath());
 		commands.put("display_cross_section",new displayCrossSection());
+		commands.put("save_maze",new saveMaze());
 		return commands;
 	}
 	
@@ -62,6 +65,38 @@ public class CommandsManager {
 			int [][] maze2d = model.displayCrossSection(crossby, index, name);
 			view.displayCrossSection(maze2d);
 		}
+		
+	}
+	public class getPath implements Command {
+		
+		@Override
+		public void doCommand(String[] args) {
+			String path = args[0];
+			File[] file =  model.getDirectory(path);
+			view.displayfolders(file);
+		}
+		
+	}
+	public class saveMaze implements Command {
+		
+		@Override
+		public void doCommand(String[] args) {
+			String name = args[0];
+			String file = args[1];
+			 model.saveCompressMaze(name,file);			
+		}
+	}
+		
+		public class loadMaze implements Command {
+			
+			@Override
+			public void doCommand(String[] args) {
+				String name = args[0];
+				String file = args[1];
+				 model.saveCompressMaze(name,file);			
+			}
+		
+	
 		
 	}
 	

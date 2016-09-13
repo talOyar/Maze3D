@@ -1,6 +1,8 @@
 package controller;
 
 
+
+
 import model.Model;
 import view.View;
 
@@ -24,6 +26,8 @@ public class MyController implements Controller{
 	public void notifyMazeIsReady(String namemaze) {
 		view.notifyMazeIsReady(namemaze);		
 	}
+	
+
 	
 
 	

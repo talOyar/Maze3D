@@ -2,14 +2,21 @@ package model;
 
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import algorithms.mazeGenerators.GrowingTreeGenerator;
 import algorithms.mazeGenerators.Maze3d;
 import controller.Controller;
+import io.MyCompressorOutputStream;
+import io.MyDecompressorInputStream;
 
 public class MyModel implements Model {
 	
@@ -60,25 +67,62 @@ public class MyModel implements Model {
 		default:
 			break;
 		}
-		
-		
 		return null;
-	}
-	
-	public static void main(String[] args) {
 	}
 
 	@Override
 	public File[] getDirectory(String path) {
 		File folder = new File(path);
 		File[] listOfFiles = folder.listFiles();
-//		   for (int i = 0; i < listOfFiles.length; i++) {
-//			      if (listOfFiles[i].isFile()) {
-//			        System.out.println("File " + listOfFiles[i].getName());
-//			      } else if (listOfFiles[i].isDirectory()) {
-//			        System.out.println("Directory " + listOfFiles[i].getName());
-//			      }
-//			    }
+
 		return listOfFiles;
 	}
+	
+	@Override
+	public void saveCompressMaze(String name, String file) {
+		
+		try (OutputStream out = new FileOutputStream(file)) {
+
+				byte[] maze = getMaze(name).toByteArray();
+				MyCompressorOutputStream output =new MyCompressorOutputStream(out);
+				output.setComprresByte(maze);	
+				output.close();
+			}
+			catch (IOException e) {e.printStackTrace();}	
+	
+		}
+	
+	@Override
+	public void loadMaze(String name, String file) {
+		
+		try {
+			InputStream in = new FileInputStream(file);
+			MyDecompressorInputStream input = new MyDecompressorInputStream(in);
+			byte[] arr =new byte [(int)file.length()];
+			try {
+				input.read(arr);
+				Maze3d maze = new Maze3d(arr);
+				mazes.put(name, maze);
+				input.close();
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+
+		
+	}
+
+
+	
 }
+	
+

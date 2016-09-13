@@ -13,7 +13,7 @@ public class Maze3d {
 private int rows;
 private int cols;
 private int levels;
-private byte[] mazeAsBytes=null;
+private byte[] mazeAsBytes;
 private int[][][] maze;
 private Position startPosition;
 private Position goalPosition;

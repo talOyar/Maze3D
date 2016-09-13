@@ -1,5 +1,6 @@
 package view;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -38,6 +39,13 @@ public class MyView implements View {
 	public void setCommands(HashMap<String, Command> commands) {
 		// TODO Auto-generated method stub
 
+	}
+	@Override
+	public void displayfolders(File[] path) {
+		for(File f: path){
+			System.out.println(f.getName());
+		}
+		
 	}
 
 }

@@ -6,11 +6,14 @@ import java.io.OutputStream;
 
 public class MyCompressorOutputStream extends OutputStream {
 	OutputStream out;
+	byte[] comprresedByte;
 	
-byte[] comprresedByte;
-	public MyCompressorOutputStream(OutputStream out, byte[] b) {
+	public MyCompressorOutputStream(OutputStream out) {
 		this.out = out;
 		
+	}
+	public void setComprresByte(byte[] Bytecomprresed){
+		this.comprresedByte = Bytecomprresed;
 	}
 	
 	@Override
