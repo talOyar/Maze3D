@@ -4,7 +4,10 @@ import java.io.File;
 import java.util.HashMap;
 
 import algorithms.mazeGenerators.Maze3d;
+import algorithms.mazeGenerators.Position;
+import algorithms.search.Solution;
 import controller.Command;
+import controller.Controller;
 
 public interface View {
 	void notifyMazeIsReady(String name);
@@ -12,4 +15,9 @@ public interface View {
 	void setCommands(HashMap<String, Command> commands);
 	void displayCrossSection(int [][]maze2d);
 	void displayfolders(File[] path);
+	void notifySolutionIsReady();
+	void displayMazeSolution(Solution<Position> solution);
+	void setController(Controller controller);
+	void start();
+
 }

@@ -6,8 +6,11 @@ import java.util.HashMap;
 
 
 import algorithms.mazeGenerators.Maze3d;
+import algorithms.mazeGenerators.Position;
+import algorithms.search.Solution;
 import model.Model;
 import view.View;
+
 
 public class CommandsManager {
 	
@@ -20,12 +23,18 @@ public class CommandsManager {
 	}
 	 
 	public HashMap<String, Command> getCommandsMap() {
+		
 		HashMap<String, Command> commands = new HashMap<String, Command>();
 		commands.put("generate_maze", new GenerateMazeCommand());
 		commands.put("display", new DisplayMazeCommand());
 		commands.put("Directory", new getPath());
 		commands.put("display_cross_section",new displayCrossSection());
 		commands.put("save_maze",new saveMaze());
+		commands.put("load_maze", new loadMaze());
+		commands.put("solve",new solveMaze3d());
+		commands.put("display_solution",new displayMazeSolution());
+		commands.put("exit", new exit());
+
 		return commands;
 	}
 	
@@ -67,6 +76,7 @@ public class CommandsManager {
 		}
 		
 	}
+	
 	public class getPath implements Command {
 		
 		@Override
@@ -87,18 +97,46 @@ public class CommandsManager {
 		}
 	}
 		
-		public class loadMaze implements Command {
+	public class loadMaze implements Command {
 			
 			@Override
 			public void doCommand(String[] args) {
 				String name = args[0];
 				String file = args[1];
-				 model.saveCompressMaze(name,file);			
+				 model.loadMaze(name,file);			
 			}
 		
-	
+	}
+		
+	public class solveMaze3d implements Command{
+
+		@Override
+		public void doCommand(String[] args) {
+			String name=args[0];
+			String algorithm=args[1];
+			model.solveMaze3d(name,algorithm);		
+		}
 		
 	}
 	
+	public class displayMazeSolution implements Command{
+
+		@Override
+		public void doCommand(String[] args) {
+			String name=args[0];
+			Solution<Position> solution=model.getMazeSolution(name);
+			view.displayMazeSolution(solution);
+		}
+		
+	} 
+	
+	public class exit implements Command{
+
+		@Override
+		public void doCommand(String[] args) {
+			
+		}
+		
+	}
 	
 }
