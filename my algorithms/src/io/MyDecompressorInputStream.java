@@ -6,28 +6,36 @@ import java.io.InputStream;
 public class MyDecompressorInputStream extends InputStream {
 	InputStream in;
 	
+	
 	public MyDecompressorInputStream(InputStream in) {
-		super();
 		this.in = in;
 	}
 
 	@Override
 	public int read() throws IOException {
+		
 		return in.read();
 	}
 	
 	public int read(byte[] arr) throws IOException {
-		int k = 0;
-		while (k < arr.length) {
-			byte count = (byte) in.read();
-			byte b = (byte) in.read();
+		
+		byte b;
+		int size=0;
+		while (size<arr.length) {
+			
+			int count = in.read();
+			b =	(byte)in.read();
+				
 				
 			for (int j = 0; j < count; j++) {
-				arr[k++] = b;
+				arr[size++] = b;
 			}
+			
 		}
+		
+		
 		return arr.length;	
 		}
+
 	}
 		
-

@@ -7,12 +7,11 @@ import java.io.OutputStream;
 public class MyCompressorOutputStream extends OutputStream {
 	OutputStream out;
 	
-byte[] comprresedByte;
-	public MyCompressorOutputStream(OutputStream out, byte[] b) {
-		this.out = out;
-		
+
+	public MyCompressorOutputStream(OutputStream out) {
+		this.out = out;		
 	}
-	
+
 	@Override
 	public void write(byte[] b) throws IOException {
 		int counter=1;
@@ -23,28 +22,38 @@ byte[] comprresedByte;
 			if(cuurByte != b[i]){
 				
 			while(counter >= 255){
+				
 				out.write(255);
 				out.write(cuurByte);
 				counter -=255;
 				}
+			
 			out.write(counter);
 			out.write(cuurByte);
 			counter=1;
-			 cuurByte = b[i];
+			cuurByte = b[i];
 			}
 			else 
 				counter++;
 			}
 		
+		
+		while(counter >= 255){
+			
+			out.write(255);
+			out.write(cuurByte);
+			counter -=255;
+			}
+		
+		//write the last 
 		out.write(counter);
 		out.write(cuurByte);
 		}
-	
-	
+
 	@Override
 	public void write(int b) throws IOException {
+	
 		out.write(b);
 	}
-
-
+	
 }
