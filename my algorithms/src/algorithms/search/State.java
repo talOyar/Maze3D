@@ -72,6 +72,7 @@ public class State<T> implements Comparable<State<T>> {
  */
 	@Override
 	public boolean equals(Object obj) {
+		@SuppressWarnings("unchecked")
 		State<T> s = (State<T>)obj;
 		return s.getValue().equals(this.getValue());
 	}

@@ -1,11 +1,6 @@
 
 package algorithms.mazeGenerators;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -13,7 +8,6 @@ public class Maze3d {
 private int rows;
 private int cols;
 private int levels;
-private byte[] mazeAsBytes;
 private int[][][] maze;
 private Position startPosition;
 private Position goalPosition;
