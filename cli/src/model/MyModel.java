@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import algorithms.demo.SearchableMaze3d;
+import algorithms.demo.demo.demo.SearchableMaze3d;
 import algorithms.mazeGenerators.GrowingTreeGenerator;
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
