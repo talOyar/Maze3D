@@ -3,12 +3,9 @@ package model;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -16,7 +13,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import algorithms.demo.SearchableMaze3d;
-import algorithms.mazeGenerators.ChooseMethod;
 import algorithms.mazeGenerators.ChoseLastCell;
 import algorithms.mazeGenerators.GrowingTreeGenerator;
 import algorithms.mazeGenerators.Maze3d;
@@ -33,7 +29,6 @@ public class MyModel implements Model {
 	
 	private Controller controller;
 	private Map<String, Maze3d> mazes = new ConcurrentHashMap<String, Maze3d>();
-	private ArrayList<Thread> threads = new ArrayList<Thread>();
 	private Map<String, Solution<Position>> solutions = new ConcurrentHashMap<String,Solution<Position>>();
 	private ExecutorService threadPool;
 
@@ -86,8 +81,7 @@ public class MyModel implements Model {
 	}	
 	
 	
-	
-	public int[][] displayCrossSection(String crossby , int index , String name) {
+	public int[][] getCrossSection(String crossby , int index , String name) {
 		if(!mazes.containsKey(name)){
 			controller.displayMessage("Maze does not exist!");
 		}
@@ -123,49 +117,67 @@ public class MyModel implements Model {
 	public void saveCompressMaze(String name, String fileName) {
 		
 		try {
-
+				if(!mazes.containsKey(name) || fileName==null){
+					controller.displayMessage("Error while trying to save the maze "+name+" into the the file "+fileName);
+					return;
+				}
+				
 				byte[] maze = getMaze(name).toByteArray();
+				
 				OutputStream out =new MyCompressorOutputStream(new FileOutputStream(fileName));
+				
+
+				int sizeA = maze.length/255;	
+				int sizeB = maze.length%255;
+
+				out.write(sizeA);
+				out.write(sizeB);
+				
 				out.write(maze);
 				out.flush();
 				out.close();
-				controller.displayMessage("maze saved to "+"fileName");
+				controller.displayMessage("The maze '"+name +"' saved Successfully to the file "+fileName);
 			}
+		
 			catch (IOException e) {
-				controller.displayMessage("cant save maze into " + fileName);
-			}	
+				controller.displayMessage("Error while trying to save the maze "+name+" into the the file "+fileName);
+							}	
 	
 		}
 	
 	@Override
 	public void loadMaze(String name, String fileName) {
 		
-		try {
-			InputStream in = new FileInputStream(fileName);
-			MyDecompressorInputStream input = new MyDecompressorInputStream(in);
-			byte[] arr =new byte [(int)fileName.length()];
-			try {
-				input.read(arr);
-				input.close();
-				Maze3d maze = new Maze3d(arr);
+		try	
+		{
+			MyDecompressorInputStream in = new MyDecompressorInputStream(new FileInputStream(fileName));
+			
+			//read the size of the array from the file
+			int sizeA = in.read();
+			int sizeB = in.read();
+			int size = (sizeA * 255) + sizeB;
+			
+			//create an array in the correct size then read the maze from the file into it
+			byte[] arr =new byte [size];
+			in.read(arr);
+			in.close();
+			
+			//create a maze using the byte array constructor
+			Maze3d maze = new Maze3d(arr);
+			
+			//if maze is not null add it to mazes then print a msg to the user.
+			if (maze!=null){
 				mazes.put(name, maze);
-				
-				
-			} catch (IOException e) {
-				controller.displayMessage("cant read maze from "+fileName+"!");
-				e.printStackTrace();
+			controller.displayMessage("The maze '"+name+"' loaded Successfully from the file "+fileName+"!");
 			}
-			
-			
-			
-		} catch (FileNotFoundException e) {
-			controller.displayMessage("file "+fileName+" not found!");
-			e.printStackTrace();
 		}
 		
-
-		
-	}
+		catch(Exception e){
+			controller.displayMessage("Error while trying to load maze from the file "+fileName+"!");
+			
+			}
+		}
+	
 
 	@Override
 	public void solveMaze3d(String name, String algorithm) {

@@ -12,8 +12,10 @@ import controller.Command;
 import controller.Controller;
 
 public class MyView implements View {
+	@SuppressWarnings("unused")
 	private Controller controller;
 	private CLI Cli;
+	@SuppressWarnings("unused")
 	private BufferedReader in;
 	private PrintWriter out;
 	 
@@ -30,10 +32,9 @@ public class MyView implements View {
 		this.controller = controller;
 	}
 
-
 	@Override
 	public void notifyMazeIsReady(String name) {
-		out.println("The maze " +name+ " is ready!");
+		out.println("The maze '"+name+"' is ready!");
 		out.flush();
 	}
 	//print the maze (get the maze from controller)
@@ -70,17 +71,19 @@ public class MyView implements View {
 	}
 	
 	@Override
-	public void displayfolders(File[] path) {
-		for(File f: path){
-			out.println(f.getName());
-			out.flush();
+	public void displayFolders(File[] path) {
+		try {
+			for(File f: path){
+				out.println(f.getName()+" ");
+				out.flush();}
+		} catch (Exception e) {
+			out.println("Error while trying to display files and folders in this directory!");
 		}
-		
 	}
 
 	@Override
 	public void notifySolutionIsReady(String name) {
-		out.println("The solution for "+name+ " is ready!");
+		out.println("The solution for the maze '"+name+"' is ready!");
 		out.flush();
 		
 	}
@@ -106,5 +109,8 @@ public class MyView implements View {
 		out.println(name);
 		out.flush();
 	}
+
+
+
 
 }
