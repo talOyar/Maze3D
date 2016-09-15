@@ -15,9 +15,10 @@ public interface View {
 	void setCommands(HashMap<String, Command> commands);
 	void displayCrossSection(int [][]maze2d);
 	void displayfolders(File[] path);
-	void notifySolutionIsReady();
+	void notifySolutionIsReady(String name);
 	void displayMazeSolution(Solution<Position> solution);
 	void setController(Controller controller);
 	void start();
+	void displayMessage(String name);
 
 }

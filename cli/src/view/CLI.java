@@ -9,6 +9,7 @@ import java.util.HashMap;
 import controller.Command;
 
 
+
 public class CLI {
 	
 BufferedReader in;
@@ -31,14 +32,11 @@ public CLI (BufferedReader in ,PrintWriter out ){
 	private void printMenu() {
 		out.print("Choose command: (");
 		for (String command : commands.keySet()) {
-			out.print(command + ",");
+			out.print(command + " ,");
 		}
 		out.println(")");
 		out.flush();
 	}
-	
-
-	
 	
 	public void start() {
 		
@@ -86,8 +84,7 @@ thread.start();
 
 	}
 	
-	
-	
+
 }
 
 

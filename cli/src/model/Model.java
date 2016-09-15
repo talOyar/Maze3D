@@ -18,5 +18,6 @@ public interface Model {
 	void solveMaze3d(String name, String algorithm);
 	Solution<Position> getMazeSolution(String name);
 	void setController(Controller controller);
+	void exit();
 	
 }

@@ -28,15 +28,15 @@ public class MyController implements Controller{
 	}
 
 	@Override
-	public void notifySolutionIsReady() {
-		view.notifySolutionIsReady();
+	public void notifySolutionIsReady(String name) {
+		view.notifySolutionIsReady(name);
 		
 	}
-	
 
-	
 
-	
-	
+	@Override
+	public void displayMessage(String msg) {
+		view.displayMessage(msg);		
+	}
 
 }

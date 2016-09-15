@@ -56,9 +56,9 @@ public class CommandsManager {
 
 		@Override
 		public void doCommand(String[] args) {
+			
 			String name = args[0];
 			Maze3d maze = model.getMaze(name);
-			 //do it!!--> if the name throw exception
 			view.displayMaze(maze);
 		}
 		
@@ -69,8 +69,8 @@ public class CommandsManager {
 		@Override
 		public void doCommand(String[] args) {
 			String name = args[0];
-			int index =Integer.parseInt(args[1]) ;
-			String crossby =args[2];
+			String crossby =args[1];
+			int index =Integer.parseInt(args[2]) ;
 			int [][] maze2d = model.displayCrossSection(crossby, index, name);
 			view.displayCrossSection(maze2d);
 		}
@@ -134,6 +134,8 @@ public class CommandsManager {
 
 		@Override
 		public void doCommand(String[] args) {
+			//terminate and shut down all thread and files securely
+			model.exit();
 			
 		}
 		

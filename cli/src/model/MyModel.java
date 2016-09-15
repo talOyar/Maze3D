@@ -11,8 +11,13 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
-import algorithms.demo.demo.demo.SearchableMaze3d;
+import algorithms.demo.SearchableMaze3d;
+import algorithms.mazeGenerators.ChooseMethod;
+import algorithms.mazeGenerators.ChoseLastCell;
 import algorithms.mazeGenerators.GrowingTreeGenerator;
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
@@ -30,26 +35,33 @@ public class MyModel implements Model {
 	private Map<String, Maze3d> mazes = new ConcurrentHashMap<String, Maze3d>();
 	private ArrayList<Thread> threads = new ArrayList<Thread>();
 	private Map<String, Solution<Position>> solutions = new ConcurrentHashMap<String,Solution<Position>>();
-
+	private ExecutorService threadPool;
 
 		
+	public MyModel() {
+		
+		threadPool = Executors.newFixedThreadPool(20);
+	}
+
 	//Create a new maze with thread 
 	@Override
 	public void generateMaze(String namemaze, int levels, int rows, int cols) {
-		Thread thread = new Thread(new Runnable(){
+		//Thread thread = new Thread
+		threadPool.execute(new Runnable(){
 			
 			public void run(){
 				
-				GrowingTreeGenerator Generator =new GrowingTreeGenerator();
+				GrowingTreeGenerator Generator =new GrowingTreeGenerator(new ChoseLastCell());
 				Maze3d maze = Generator.generate(levels, rows, cols);
 				mazes.put(namemaze, maze);
-				//controller send the request to view 
+				//controller send the request to view
 				controller.notifyMazeIsReady(namemaze);
 			}
 		});
-		thread.start();
+		
+		//thread.start();
 		// input all the threads into list
-		threads.add(thread);
+		//threads.add(thread);
 	}
 
 	@Override
@@ -60,12 +72,26 @@ public class MyModel implements Model {
 	//get a name & return maze 
 	@Override
 	public Maze3d getMaze(String name) {
+		
+		if(!mazes.containsKey(name)){
+			controller.displayMessage("Maze does not exist!");
+			
+		}
+		else
 		return mazes.get(name);
+		
+		
+		return null;
+		
 	}	
 	
 	
 	
 	public int[][] displayCrossSection(String crossby , int index , String name) {
+		if(!mazes.containsKey(name)){
+			controller.displayMessage("Maze does not exist!");
+		}
+		else{
 		Maze3d maze =  mazes.get(name);
 
 		switch (crossby) {
@@ -78,6 +104,9 @@ public class MyModel implements Model {
 		default:
 			break;
 		}
+		
+		}
+		
 		return null;
 	}
 
@@ -89,42 +118,48 @@ public class MyModel implements Model {
 		return listOfFiles;
 	}
 	
+	
 	@Override
-	public void saveCompressMaze(String name, String file) {
+	public void saveCompressMaze(String name, String fileName) {
 		
-		try (OutputStream out = new FileOutputStream(file)) {
+		try {
 
 				byte[] maze = getMaze(name).toByteArray();
-				MyCompressorOutputStream output =new MyCompressorOutputStream(out);
-				output.setComprresByte(maze);	
-				output.close();
+				OutputStream out =new MyCompressorOutputStream(new FileOutputStream(fileName));
+				out.write(maze);
+				out.flush();
+				out.close();
+				controller.displayMessage("maze saved to "+"fileName");
 			}
-			catch (IOException e) {e.printStackTrace();}	
+			catch (IOException e) {
+				controller.displayMessage("cant save maze into " + fileName);
+			}	
 	
 		}
 	
 	@Override
-	public void loadMaze(String name, String file) {
+	public void loadMaze(String name, String fileName) {
 		
 		try {
-			InputStream in = new FileInputStream(file);
+			InputStream in = new FileInputStream(fileName);
 			MyDecompressorInputStream input = new MyDecompressorInputStream(in);
-			byte[] arr =new byte [(int)file.length()];
+			byte[] arr =new byte [(int)fileName.length()];
 			try {
 				input.read(arr);
+				input.close();
 				Maze3d maze = new Maze3d(arr);
 				mazes.put(name, maze);
-				input.close();
+				
 				
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				controller.displayMessage("cant read maze from "+fileName+"!");
 				e.printStackTrace();
 			}
 			
 			
 			
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			controller.displayMessage("file "+fileName+" not found!");
 			e.printStackTrace();
 		}
 		
@@ -134,33 +169,48 @@ public class MyModel implements Model {
 
 	@Override
 	public void solveMaze3d(String name, String algorithm) {
-		Thread thread=new Thread(new Runnable() {
+		
+		//Thread thread=new Thread
+		
+		threadPool.execute(new Runnable() {
 			
 			@Override
 			public void run() {
-
+				
+				if(!mazes.containsKey(name)){
+					controller.displayMessage("Maze does not exist!");
+					return;
+				}
+				
+				else{
 				Maze3d maze=mazes.get(name);
+				
 				SearchableMaze3d searchableMaze= new SearchableMaze3d(maze);
 
 				if(algorithm.equals("bfs")|| algorithm.equals("BFS")){
 					CommonSearcher<Position> searcher = new Bfs<Position>();
 					Solution<Position> solution=searcher.search(searchableMaze);
 					solutions.put(name, solution);
-					controller.notifySolutionIsReady();
+					controller.notifySolutionIsReady(name);
 					
 				}
 				else if(algorithm.equals("dfs")|| algorithm.equals("DFS")){
 					CommonSearcher<Position> searcher = new Dfs<Position>();
 					Solution<Position> solution=searcher.search(searchableMaze);
 					solutions.put(name, solution);
-					controller.notifySolutionIsReady();
+					controller.notifySolutionIsReady(name);
+					
 				}
-				else
-					System.out.println("Wrong algorithm choice!");
+				else{
+					controller.displayMessage("Wrong algorithm choice!");
+						}
+				}
 			}
 		});
-		thread.start();
-		threads.add(thread);
+		
+		//thread.start();
+		
+		//threads.add(thread);
 	}
 
 	@Override
@@ -168,17 +218,36 @@ public class MyModel implements Model {
 		
 		if(!solutions.containsKey(name)){
 			
-			System.out.println("No solution for this maze yet!");
-			return null;	}
+			controller.displayMessage("No solution for this maze yet!");
+			return null;
+				}
 		
 		else{
 			
 			Solution<Position> solution=solutions.get(name);
 			return solution;	}
+		
 	}
-
-
 	
+	public void exit(){
+		
+		threadPool.shutdown();
+		boolean terminated=false;
+		
+		while(!terminated)
+		{
+			try {
+				terminated=(threadPool.awaitTermination(10, TimeUnit.SECONDS));
+			} 
+			catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		controller.displayMessage("Program terminated!");
+
+	}
 }
 	
 

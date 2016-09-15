@@ -3,7 +3,6 @@ package view;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.PrintWriter;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import algorithms.mazeGenerators.Maze3d;
@@ -34,20 +33,34 @@ public class MyView implements View {
 
 	@Override
 	public void notifyMazeIsReady(String name) {
-		out.println("the maze" +name+ "is ready");
+		out.println("The maze " +name+ " is ready!");
 		out.flush();
 	}
 	//print the maze (get the maze from controller)
+	
 	@Override
 	public void displayMaze(Maze3d maze) {
-		maze.toString();
+		if(maze!=null)
+		out.println(maze);
 
 	}
 
 	@Override
 	public void displayCrossSection(int[][] maze2d) {
+		if(maze2d!=null){
+		int length = maze2d.length;
+		int width = maze2d[0].length;
 		
-		out.println(Arrays.deepToString(maze2d));
+		for(int i=0;i<length;i++){
+			out.println("");
+			for(int j=0;j<width;j++){
+				out.print(" " + maze2d[i][j] + " ");
+			}
+			out.println();
+			out.println();
+		}
+		
+		}
 		
 	}
 	
@@ -55,6 +68,7 @@ public class MyView implements View {
 	public void setCommands(HashMap<String, Command> commands) {
 		Cli.setCommands(commands);
 	}
+	
 	@Override
 	public void displayfolders(File[] path) {
 		for(File f: path){
@@ -65,20 +79,32 @@ public class MyView implements View {
 	}
 
 	@Override
-	public void notifySolutionIsReady() {
-		out.println("The maze is solved!");
+	public void notifySolutionIsReady(String name) {
+		out.println("The solution for "+name+ " is ready!");
 		out.flush();
 		
 	}
 
 	@Override
 	public void displayMazeSolution(Solution<Position> solution) {
+		if(solution!=null){
 		out.println(solution);
 		out.flush();
+		}
 	}
 	
-	public void Start(){
+
+	@Override
+	public void start() {
 		Cli.start();
+		
+	}
+
+
+	@Override
+	public void displayMessage(String name) {
+		out.println(name);
+		out.flush();
 	}
 
 }
