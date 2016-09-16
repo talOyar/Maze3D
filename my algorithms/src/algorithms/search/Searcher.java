@@ -5,7 +5,7 @@ package algorithms.search;
  *<p>Holds two methods to be implemented-search and getNUmberOFNodesEvaluated </p>
  *<p>Implements by CommonSearcher<p>
  * 
- * @author Tal Oyar
+ * @author Tal Oyar & Tomer Cohen
  * @since 2016-08-30
  * @version 1.0
  * 

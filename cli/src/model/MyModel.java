@@ -1,3 +1,4 @@
+
 package model;
 
 
@@ -25,6 +26,22 @@ import controller.Controller;
 import io.MyCompressorOutputStream;
 import io.MyDecompressorInputStream;
 
+/**
+ * <h2> MyModel  <h2>
+ * <p> implements Model interface
+ * <p> The model stores data that is retrieved according to commands 
+ * from the controller and displayed in the view.
+ *
+ * 
+ * @author Tal Oyar & Tomer Cohen
+ * @since 09-15-2016
+ * @version 1.0
+ * 
+ *@see Controller
+ *@see View
+ *@see Model
+ *@see CommandManager 
+ */
 public class MyModel implements Model {
 	
 	private Controller controller;
@@ -37,11 +54,18 @@ public class MyModel implements Model {
 		
 		threadPool = Executors.newFixedThreadPool(20);
 	}
-
+	
+/**
+ * <p> generateMaze method
+ * <p> generate a maze in a thread according to the dimensions received from the user 
+ *  and add it to an hashMap of mazes with the name entered by the user.
+ *  
+ *  
+ */
 	//Create a new maze with thread 
+	
 	@Override
 	public void generateMaze(String namemaze, int levels, int rows, int cols) {
-		//Thread thread = new Thread
 		threadPool.execute(new Runnable(){
 			
 			public void run(){
@@ -53,17 +77,22 @@ public class MyModel implements Model {
 				controller.notifyMazeIsReady(namemaze);
 			}
 		});
-		
-		//thread.start();
-		// input all the threads into list
-		//threads.add(thread);
-	}
 
+	}
+	
+/**
+ * <p>setController method
+ * <p>sets the controller of the model
+ */
 	@Override
 	public void setController(Controller controller) {
 		this.controller=controller;		
 	}
-
+/**
+ * <p>getMaze method
+ * <p> receives a string of the maze name and return the maze
+ * @return maze3d
+ */
 	//get a name & return maze 
 	@Override
 	public Maze3d getMaze(String name) {
@@ -80,7 +109,12 @@ public class MyModel implements Model {
 		
 	}	
 	
-	
+	/**
+	 * <p>getCrossSection method
+	 * <p> receives from the controller the name of the maze, the section(x,y,z) and the index
+	 * and returns the 2dmaze
+	 * 
+	 */
 	public int[][] getCrossSection(String crossby , int index , String name) {
 		if(!mazes.containsKey(name)){
 			controller.displayMessage("Maze does not exist!");
@@ -103,7 +137,11 @@ public class MyModel implements Model {
 		
 		return null;
 	}
-
+/**
+ * <p>getDirectory method
+ * <p> receives a directory path and returns a file array that contains all the folders and files in
+ * the directory.
+ */
 	@Override
 	public File[] getDirectory(String path) {
 		File folder = new File(path);
@@ -111,7 +149,11 @@ public class MyModel implements Model {
 
 		return listOfFiles;
 	}
-	
+	/**
+	 * <p> saveCompressMaze method
+	 * <p> receives the name of the maze to be saved and the name of the file to save into
+	 * and saves the compressed maze into that file
+	 */
 	
 	@Override
 	public void saveCompressMaze(String name, String fileName) {
@@ -127,11 +169,8 @@ public class MyModel implements Model {
 				OutputStream out =new MyCompressorOutputStream(new FileOutputStream(fileName));
 				
 
-				int sizeA = maze.length/255;	
-				int sizeB = maze.length%255;
-
-				out.write(sizeA);
-				out.write(sizeB);
+				out.write(maze.length/255);
+				out.write(maze.length%255);
 				
 				out.write(maze);
 				out.flush();
@@ -140,11 +179,16 @@ public class MyModel implements Model {
 			}
 		
 			catch (IOException e) {
-				controller.displayMessage("Error while trying to save the maze "+name+" into the the file "+fileName);
+				controller.displayMessage("Error while trying to save the maze '"+name+"' into the file "+fileName);
 							}	
 	
 		}
-	
+	/**
+	 * <p>loadMaze method
+	 * <p> receives the name of the maze to load and the name of the file to load it from
+	 * and loads the decompressed maze.
+	 * 
+	 */
 	@Override
 	public void loadMaze(String name, String fileName) {
 		
@@ -155,17 +199,17 @@ public class MyModel implements Model {
 			//read the size of the array from the file
 			int sizeA = in.read();
 			int sizeB = in.read();
-			int size = (sizeA * 255) + sizeB;
+			int Arraysize = (sizeA * 255) + sizeB;
 			
 			//create an array in the correct size then read the maze from the file into it
-			byte[] arr =new byte [size];
+			byte[] arr =new byte [Arraysize];
 			in.read(arr);
 			in.close();
 			
-			//create a maze using the byte array constructor
+			//create a maze using the bytes array constructor
 			Maze3d maze = new Maze3d(arr);
 			
-			//if maze is not null add it to mazes then print a msg to the user.
+			//if maze is not null add it to mazes then print a message to the user.
 			if (maze!=null){
 				mazes.put(name, maze);
 			controller.displayMessage("The maze '"+name+"' loaded Successfully from the file "+fileName+"!");
@@ -178,11 +222,14 @@ public class MyModel implements Model {
 			}
 		}
 	
-
+/**
+ * <p>solveMaze3d method
+ * <p> receives the name of the maze to be solved and the desired algorithm(BFS or DFS)
+ * to solve it with. then solve the maze in a thread and adds the solution to an hashMap of solutions
+ */
 	@Override
 	public void solveMaze3d(String name, String algorithm) {
 		
-		//Thread thread=new Thread
 		
 		threadPool.execute(new Runnable() {
 			
@@ -220,11 +267,12 @@ public class MyModel implements Model {
 			}
 		});
 		
-		//thread.start();
 		
-		//threads.add(thread);
 	}
-
+	/**
+	 * <p>getMazeSolution method
+	 * <p>returns the solution of the maze.
+	 */
 	@Override
 	public Solution<Position> getMazeSolution(String name) {
 		
@@ -240,26 +288,34 @@ public class MyModel implements Model {
 			return solution;	}
 		
 	}
-	
+	/**
+	 * <p> exit method
+	 *<p> terminate the program.
+	 *<p> if a thread is still working it will wait until it will be terminated
+	 */
 	public void exit(){
 		
 		threadPool.shutdown();
 		boolean terminated=false;
-		
+
 		while(!terminated)
 		{
 			try {
 				terminated=(threadPool.awaitTermination(10, TimeUnit.SECONDS));
+				
 			} 
 			catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				controller.displayMessage("The program did not terminated properly!");
 				e.printStackTrace();
 			}
 		}
 		
-		controller.displayMessage("Program terminated!");
+		if(terminated){
+			controller.displayMessage("Program terminated!");}
+
 
 	}
+	
 }
 	
 

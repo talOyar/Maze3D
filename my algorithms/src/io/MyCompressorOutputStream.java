@@ -2,7 +2,19 @@ package io;
 
 import java.io.IOException;
 import java.io.OutputStream;
-
+/**
+ * <h2>MyCompressorOutputStream class<h2>
+ * <p> This class extends outputStream and overrides the write(byte[] ) and write(int ) methods
+ * <p> This class gets an array of bytes compress it and saves it to an output
+ * 
+ * @author Tal Oyar & Tomer Cohen
+ * @since 2016-08-30
+ * @version 1.0
+ *
+ *
+ *@see outputStream
+ *
+ */
 
 public class MyCompressorOutputStream extends OutputStream {
 	OutputStream out;
@@ -16,7 +28,11 @@ public class MyCompressorOutputStream extends OutputStream {
 	public void setComprresByte(byte[] Bytecomprresed){
 		this.comprresedByte = Bytecomprresed;
 	}
-	
+	/**
+	 * <p> write(byte[] b) method
+	 * <p> this method receives an array of bytes then compress it and saves it to the output 
+	 * that was initialize in the contractor
+	 */
 	@Override
 	public void write(byte[] b) throws IOException {
 		int counter=1;

@@ -3,7 +3,6 @@ package algorithms.mazeGenerators;
 public abstract class Generator implements Maze3dGenerator {
 		
 	public Generator() {
-		super();
 		// TODO Auto-generated constructor stub
 	}
 

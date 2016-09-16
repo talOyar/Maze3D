@@ -14,7 +14,7 @@ import java.util.PriorityQueue;
  *@see State
  *
  *
- * @author Tal Oyar
+ * @author Tal Oyar & Tomer Cohen
  * @since 2016-08-30
  * @version 1.0 
 */

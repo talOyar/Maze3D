@@ -11,7 +11,7 @@ import java.util.PriorityQueue;
  *@param <T> this is the generic parameter received from the specific problem and represent the State.
  *
  *
- * @author Tal Oyar
+ * @author Tal Oyar & Tomer Cohen
  * @since 2016-08-30
  * @version 1.0
  * 

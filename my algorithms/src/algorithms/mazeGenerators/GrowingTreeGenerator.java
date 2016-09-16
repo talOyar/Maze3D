@@ -6,7 +6,6 @@ import java.util.Random;
 public class GrowingTreeGenerator extends Generator implements Maze3dGenerator {
 
 	public GrowingTreeGenerator(ChooseMethod desiredMethod) {
-		super();
 		this.desiredMethod = desiredMethod;
 	}
 
@@ -51,6 +50,7 @@ public class GrowingTreeGenerator extends Generator implements Maze3dGenerator {
 	else
 		list.remove(position);
 	}
+	
 	//choose random goal position then set it free.
 	maze.setRandomGoal();
 	
@@ -59,6 +59,7 @@ public class GrowingTreeGenerator extends Generator implements Maze3dGenerator {
 	
 	
 	private void cutChoosenDirection(Directions direction,Position position){
+		
 		//using 'switch-case' to set free chosen direction
 		switch (direction) {
 		

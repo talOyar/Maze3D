@@ -1,4 +1,14 @@
 
+package view;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
+
+
+import controller.Command;
+
 /**
  * <h2>Class CLI<h2>
  * <p>CLI- command line user interface
@@ -23,16 +33,6 @@
  * @see view
  *
  */
-package view;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.HashMap;
-
-
-import controller.Command;
-
 
 
 public class CLI {
@@ -64,12 +64,15 @@ public CLI (BufferedReader in ,PrintWriter out ){
 	 * 
 	 * @param commands- an hashMap of commands.
 	 */
+	
 	private void printMenu() {
-		out.print("Choose command: (");
+		int i=1;
+		out.println("Choose command: ");
 		for (String command : commands.keySet()) {
-			out.print(command + " ,");
+			out.println(i+"."+command);
+			i++;
 		}
-		out.println(")");
+		//out.println(")");
 		out.flush();
 	}
 	
@@ -90,6 +93,7 @@ Thread thread=new Thread(new  Runnable() {
 	public void run() {
 	
 			while(true){
+				
 				printMenu();
 				try {
 					String commandLine = in.readLine();

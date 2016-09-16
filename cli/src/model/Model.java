@@ -1,3 +1,4 @@
+
 package model;
 
 import java.io.File;
@@ -7,7 +8,11 @@ import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
 import controller.Controller;
-
+/**
+ * <h2> Model interface<h2>
+ * <p>The model stores data that is retrieved according to commands from the controller and displayed in the view.
+ * 
+ */
 public interface Model {
 	void generateMaze(String name,int levels , int rows, int cols);
 	Maze3d getMaze(String name);

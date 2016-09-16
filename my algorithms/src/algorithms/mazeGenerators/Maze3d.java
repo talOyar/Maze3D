@@ -16,7 +16,6 @@ public final int WALL=1;
 
 
 public Maze3d(byte[] mazeAsBytes) {
-		System.out.println(mazeAsBytes.length);
 		int count=0;
 
 		//get the sizes of the maze
@@ -371,37 +370,6 @@ public byte[] toByteArray(){
 	return bytesMaze;
 	
 }	
-//	
-//	try { //Surround the data writing with try catch block
-//		
-//		//save maze size data
-//		data.writeInt(levels);
-//		data.writeInt(rows);
-//		data.writeInt(cols);
-//		//save start position
-//		data.writeInt(startPosition.x);
-//		data.writeInt(startPosition.y);
-//		data.writeInt(startPosition.z);
-//		//save goal position
-//		data.writeInt(goalPosition.x);
-//		data.writeInt(goalPosition.y);
-//		data.writeInt(goalPosition.z);
-//		
-//		//save the maze
-//		
-//		for(int i=0;i<levels;i++){
-//			for(int j=0;j<rows;j++){
-//				for(int k=0;k<cols;k++){
-//					data.writeInt(maze[i][j][k]);
-//				}
-//			}
-//		}
-//		
-//	} catch (IOException e) {// throw exception
-//		System.out.println("IO exception!");
-//		e.printStackTrace();
-//	}
-//	return out.toByteArray();
-//	
+
 
 }

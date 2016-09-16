@@ -1,3 +1,4 @@
+
 package view;
 
 import java.io.File;
@@ -8,7 +9,20 @@ import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
 import controller.Command;
 import controller.Controller;
-
+/**
+ * <h2>View interface<h2>
+ * <p> Holds ten methods to be override
+ * <p>Implemented by MyVIew class
+ * <p>The view generates new output to the user based on changes in the model.
+ * 
+ * 
+ * @author Tal Oyar& Tomer Cohen
+ * @version 1.0
+ * @since 09-15-2016
+ * 
+ * 
+ * @see MyVIew
+ */
 public interface View {
 	void notifyMazeIsReady(String name);
 	void displayMaze(Maze3d maze);

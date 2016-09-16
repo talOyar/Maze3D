@@ -9,7 +9,7 @@ import algorithms.demo.SearchableMaze3d;
  * <p>implements the comparable interface</p>
  * <p> overrides compareTo method</p>
  * 
- *@author Tal Oyar
+ *@author Tal Oyar& Tomer Cohen
  *@since 2016-08-30
  *@version 1.0
  *
