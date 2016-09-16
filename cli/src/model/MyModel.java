@@ -246,14 +246,14 @@ public class MyModel implements Model {
 				
 				SearchableMaze3d searchableMaze= new SearchableMaze3d(maze);
 
-				if(algorithm.equals("bfs")|| algorithm.equals("BFS")){
+				if(algorithm.equalsIgnoreCase("bfs")){
 					CommonSearcher<Position> searcher = new Bfs<Position>();
 					Solution<Position> solution=searcher.search(searchableMaze);
 					solutions.put(name, solution);
 					controller.notifySolutionIsReady(name);
 					
 				}
-				else if(algorithm.equals("dfs")|| algorithm.equals("DFS")){
+				else if(algorithm.equalsIgnoreCase("dfs")){
 					CommonSearcher<Position> searcher = new Dfs<Position>();
 					Solution<Position> solution=searcher.search(searchableMaze);
 					solutions.put(name, solution);
