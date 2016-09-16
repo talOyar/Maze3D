@@ -1,4 +1,17 @@
 
+package controller;
+
+import java.io.File;
+
+import java.util.HashMap;
+
+
+import algorithms.mazeGenerators.Maze3d;
+import algorithms.mazeGenerators.Position;
+import algorithms.search.Solution;
+import model.Model;
+import view.View;
+
 /**
  * <h2>Class CommandManager<h2>
  * <p>holds all the command classes that implements the Command interface
@@ -19,19 +32,6 @@
  * @see view
  *
  */
-package controller;
-
-import java.io.File;
-
-import java.util.HashMap;
-
-
-import algorithms.mazeGenerators.Maze3d;
-import algorithms.mazeGenerators.Position;
-import algorithms.search.Solution;
-import model.Model;
-import view.View;
-
 
 public class CommandsManager {
 	
@@ -42,8 +42,9 @@ public class CommandsManager {
 		this.model = model;
 		this.view = view;		
 	}
+	
 	 /**
-	  * <h2>GetCommandMap method<h2>
+	  * <p>GetCommandMap method<p>
 	  * <p>puts all the commands in a list(hashMap) and returns it.
 	  * 
 	  * @return the commands list.
@@ -52,13 +53,13 @@ public class CommandsManager {
 		
 		HashMap<String, Command> commands = new HashMap<String, Command>();
 		commands.put("generate_maze", new GenerateMazeCommand());
-		commands.put("display", new DisplayMazeCommand());
-		commands.put("directory", new getPathCommand());
+		commands.put("display_maze", new DisplayMazeCommand());
+		commands.put("solve_maze",new solveMaze3dCommand());
+		commands.put("display_solution",new displayMazeSolutionCommand());
 		commands.put("display_cross_section",new displayCrossSectionCommand());
 		commands.put("save_maze",new saveMazeCommand());
 		commands.put("load_maze", new loadMazeCommand());
-		commands.put("solve",new solveMaze3dCommand());
-		commands.put("display_solution",new displayMazeSolutionCommand());
+		commands.put("directory", new getPathCommand());
 		commands.put("exit", new exitCommand());
 
 		return commands;

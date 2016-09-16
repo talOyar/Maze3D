@@ -35,10 +35,14 @@ public class Bfs<T> extends CommonSearcher<T> {
 		State<T> startState = s.getStartState();
 		openList.add(startState);
 		
-		while(!openList.isEmpty()){ // while the open list is not empty- continue.
-			State<T> currentState=openList.poll();// each iteration we remove the best state from open list
-			evaluatedNodes++; //promoting the nodes number by 1 each iteration 
-			closedList.add(currentState); //adding the current state to the close list
+		while(!openList.isEmpty()){ 
+			// while the open list is not empty- continue.
+			State<T> currentState=openList.poll();
+			// each iteration we remove the best state from open list
+			evaluatedNodes++; 
+			//promoting the nodes number by 1 each iteration 
+			closedList.add(currentState); 
+			//adding the current state to the close list
 			State<T> goalState  = s.getGoalState();
 			//if current state equals goal state-return the back trace of states from goal to start
 			if(currentState.equals(goalState)) 

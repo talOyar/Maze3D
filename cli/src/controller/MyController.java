@@ -1,4 +1,11 @@
+
+
+
+
 package controller;
+
+import model.Model;
+import view.View;
 /**
  * <h2> MyController class<h2>
  * <p> implements Controller interface
@@ -16,13 +23,6 @@ package controller;
  *@see Model
  *@see CommandManager 
  */
-
-
-
-
-import model.Model;
-import view.View;
-
 public class MyController implements Controller{
 	private View view;
 	@SuppressWarnings("unused")
@@ -72,7 +72,7 @@ public class MyController implements Controller{
 	
 	/**
 	 * <p> displayMessage method
-	 * <p> display a message to the output using the view displayMessage method
+	 * <p> display a message to the output(user) using the view displayMessage method
 	 * @see MyView
 	 */
 	@Override

@@ -2,13 +2,13 @@ package algorithms.search;
 
 import java.util.ArrayList;
 /**
- * searchable interface
+ * Searchable interface
  * <p>implements by the problem domain.
  * <p> contains four methods to be override 
  * <p> holds by the searcher class
  * 
  * 
- * @author Tal Oyar
+ * @author Tal Oyar & Tomer Cohen
  * @version 1.0
  * @since 2016-08-30
  *

@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * <p> represent the solution of the specified problem
  * 
  * 
- * @author Tal Oyar
+ * @author Tal Oyar & Tomer Cohen
  * @version 1.0
  *@since 2016-08-30
  *
