@@ -94,7 +94,7 @@ public class CommandsManager {
 		}		
 	}
 	/**
-	 * <h2>DisplayMazeCommand<h2>
+	 * <h2>DisplayMazeCommand class<h2>
 	 * <p> implement Command interface and override the doCommand method
 	 * <p> get the name from the Cli(user input) and display the maze to the output.
 	 * <p> uses the displayMaze method of MyView(implements view interface)
@@ -123,12 +123,12 @@ public class CommandsManager {
 	}
 	
 	/**
-	 * <h2> displayCrossSectionCommand<h2>
-	 * <p> implement Command interface and override the doCommand method
-	 * <p> gets from the CLI(user input) the name of the maze the section(x,y,z) and an index.
-	 * 	then display to the output the 2dmaze in the index of the section.
-	 * <p> uses the MyModel(implements Model) method- getCrossSection to get the 2dmaze
-	 * <p> uses the MyVIew(implements View) method - displayCrossSection to display the 2dmaze to the output.
+	 * <h2> displayCrossSectionCommand class<h2>
+	 * implement Command interface and override the doCommand method
+	 * gets from the CLI(user input) the name of the maze the section(x,y,z) and an index.
+	 * then display to the output the 2dmaze in the index of the section.
+	 * uses the MyModel(implements Model) method- getCrossSection to get the 2dmaze
+	 * uses the MyVIew(implements View) method - displayCrossSection to display the 2dmaze to the output.
 	 * 
 	 *  
 	 * @author Tal Oyar& Tomer Cohen
@@ -186,7 +186,7 @@ public class CommandsManager {
 	}
 	
 	/**
-	 * <h2> saveMazeCommand<h2>
+	 * <h2> saveMazeCommand class<h2>
 	 * <p> implement Command interface and override the doCommand method
 	 * <p>save a maze into a file
 	 * <p> uses MyModel saveCompressMaze method to save the maze into the  file
@@ -302,11 +302,11 @@ public class CommandsManager {
 	
 	/**
 	 * <h2> exitCommand Class<h2>
-	 * <p> implement Command interface and override the doCommand method
-	 * <p> terminated the program and all threads
-	 * <p> using MyModel method exit to terminat all threads
+	 *  implement Command interface and override the doCommand method
+	 *  terminated the program and all threads
+	 *  using MyModel method exit to terminat all threads
 	 * 
-	 * @author Tal Oyar & Tomer Cohen
+	 *@author Tal Oyar & Tomer Cohen
 	 *
 	 *
 	 *@see MyModel

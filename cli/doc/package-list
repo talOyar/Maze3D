@@ -1,1 +1,8 @@
+algorithms.demo
+algorithms.mazeGenerators
+algorithms.search
+boot
+controller
+io
 model
+view
