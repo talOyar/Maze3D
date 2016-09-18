@@ -103,11 +103,10 @@ public class MyModel extends Observable implements Model {
 		
 		if(!mazes.containsKey(name)){
 			presenter.displayMessage("Maze does not exist!");
-			
 		}
 		else
+	
 		return mazes.get(name);
-		
 		
 		return null;
 		

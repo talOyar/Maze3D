@@ -45,6 +45,7 @@ HashMap<String,Command> commands;
 public CLI (BufferedReader in ,PrintWriter out ){
 	this.out=new PrintWriter(out);
 	this.in = new BufferedReader(in);
+	
 }
 
 

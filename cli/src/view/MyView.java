@@ -165,7 +165,6 @@ public class MyView extends Observable implements View, Observer {
 		out.flush();
 	}
 
-
 @Override
 public void update(Observable o, Object arg) {
 	if (o == cli){

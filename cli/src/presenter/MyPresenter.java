@@ -25,7 +25,6 @@ import view.View;
  */
 public class MyPresenter implements  Presenter , Observer {
 	private View view;
-	@SuppressWarnings("unused")
 	private Model model;
 	private CommandsManager commandsManager;
 	private HashMap<String, Command> commands;
@@ -84,6 +83,7 @@ public class MyPresenter implements  Presenter , Observer {
 	public void update(Observable o, Object arg) {
 			if (o == view) {
 				String commandLine = (String)arg;
+				
 				
 				String arr[] = commandLine.split(" ");
 				String command = arr[0];			

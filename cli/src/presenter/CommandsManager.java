@@ -117,9 +117,7 @@ public class CommandsManager {
 			} catch (Exception e) {
 				view.displayMessage("Wrong input,please try again!");
 			}
-;
 		}
-		
 	}
 	
 	/**
