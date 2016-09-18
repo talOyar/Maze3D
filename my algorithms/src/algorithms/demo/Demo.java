@@ -1,10 +1,6 @@
 package algorithms.demo;
 
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import algorithms.mazeGenerators.ChoseLastCell;
 import algorithms.mazeGenerators.GrowingTreeGenerator;
@@ -15,8 +11,7 @@ import algorithms.search.CommonSearcher;
 import algorithms.search.Dfs;
 import algorithms.search.Searcher;
 import algorithms.search.Solution;
-import io.MyCompressorOutputStream;
-import io.MyDecompressorInputStream;
+
 /**
  * <h2>Demo class<h2> 
  * <p> The Demo class generate a 3d maze then test the BFS and DFS search algorithm
@@ -35,7 +30,7 @@ import io.MyDecompressorInputStream;
 
 public class Demo {
 
-	public static void main(String[] args){
+	public static void Run(){
 			
 		GrowingTreeGenerator mg= new GrowingTreeGenerator(new ChoseLastCell());
 		Maze3d maze=(mg.generate(10,10,10));
@@ -45,49 +40,16 @@ public class Demo {
 		CommonSearcher<Position> searcherDfs = new Dfs<Position>();	
 
 		Solution<Position> solutionBfs = searcherBfs.search(searchableMaze);
+		System.out.println("BFS solution:");
 		System.out.println(solutionBfs);
+		System.out.println("Nodes evaluated:");
+		System.out.println(searcherBfs.getNumberOfNodesEvaluated());
+		
+		System.out.println("DFS solution:");
 		Solution<Position> solutionDfs= searcherDfs.search(searchableMaze);
 		System.out.println(solutionDfs);
-		System.out.println(searcherBfs.getNumberOfNodesEvaluated());
+		System.out.println("Nodes evaluated:");
 		System.out.println(searcherDfs.getNumberOfNodesEvaluated());
 	
-	
-		MyCompressorOutputStream out;
-		try {
-			
-		out = new MyCompressorOutputStream(new FileOutputStream("1.maz"));
-				
-			out.write(maze.toByteArray());
-			out.flush();
-			out.close();
-			
-		} catch (IOException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
-		
-		MyDecompressorInputStream in;
-		
-		try {
-			in=new MyDecompressorInputStream(
-			new FileInputStream("1.maz"));
-
-		byte b[]=new byte[maze.toByteArray().length];
-		
-			in.read(b);
-			in.close();
-			
-		Maze3d loaded=new Maze3d(b);
-		System.out.println(loaded);
-		System.out.println(loaded.equals(maze));
-		
-		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
 	}
-	
 }
