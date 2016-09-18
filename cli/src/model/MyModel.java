@@ -77,7 +77,7 @@ public class MyModel extends Observable implements Model {
 				Maze3d maze = Generator.generate(levels, rows, cols);
 				mazes.put(namemaze, maze);
 				setChanged();
-				notifyObservers("The maze '"+namemaze+"' is ready!");
+				notifyObservers("maze_ready " +namemaze);
 				return maze;
 			}
 		});
@@ -103,11 +103,10 @@ public class MyModel extends Observable implements Model {
 		
 		if(!mazes.containsKey(name)){
 			presenter.displayMessage("Maze does not exist!");
-			
 		}
-		else
+		else{
 		return mazes.get(name);
-		
+		}
 		
 		return null;
 		
