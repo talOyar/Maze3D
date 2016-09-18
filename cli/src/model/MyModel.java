@@ -164,11 +164,9 @@ public class MyModel extends Observable implements Model {
 		
 		try {
 				if(!mazes.containsKey(name) || fileName==null){
-<<<<<<< HEAD
+
 					presenter.displayMessage("Error while trying to save the maze "+name+" into the the file "+fileName);
-=======
-					controller.displayMessage("Error while trying to save the maze "+name+" into the the file "+fileName);
->>>>>>> refs/heads/master
+
 					return;
 				}
 				
