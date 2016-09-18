@@ -39,9 +39,9 @@ public class MyPresenter implements  Presenter , Observer {
 		this.view = view;
 		this.model = model;	
 		commandsManager = new CommandsManager(model,view);
-		commands = commandsManager.getCommandsMap();
+		//commands = commandsManager.getCommandsMap();
 		//return : view.commands HashMap (maze & display)   
-		view.setCommands(commands);
+		//view.setCommands(commands);
 	}
 	
 	/**
@@ -83,30 +83,14 @@ public class MyPresenter implements  Presenter , Observer {
 	public void update(Observable o, Object arg) {
 			if (o == view) {
 				String commandLine = (String)arg;
-				
-				
-				String arr[] = commandLine.split(" ");
-				String command = arr[0];			
-				
-				if(!commands.containsKey(command)) {
-					view.displayMessage("Command doesn't exist");			
-				}
-				else {
-					String[] args = null;
-					if (arr.length > 1) {
-						String commandArgs = commandLine.substring(
-								commandLine.indexOf(" ") + 1);
-						args = commandArgs.split(" ");							
-					}
-					Command cmd = commands.get(command);
-					cmd.doCommand(args);	
-				}
+				commandsManager.executCommand(commandLine);
 			}
 
 		if (o == model) {
-			view.displayMessage((String)arg);				
+			String commandLine = (String)arg;
+			commandsManager.executCommand(commandLine);				
 		}
-	}
+}
 
 
 }

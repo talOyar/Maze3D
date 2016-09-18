@@ -37,10 +37,12 @@ public class CommandsManager {
 	
 	private Model model;
 	private View view;
+	HashMap<String, Command> commands;
 	
 	public CommandsManager(Model model, View view) {
 		this.model = model;
-		this.view = view;		
+		this.view = view;	
+		commands = getCommandsMap();
 	}
 	
 	 /**
@@ -61,9 +63,49 @@ public class CommandsManager {
 		commands.put("load_maze", new loadMazeCommand());
 		commands.put("directory", new getPathCommand());
 		commands.put("exit", new exitCommand());
-
+		commands.put("maze_ready", new DisplayMazeIsReady());
 		return commands;
 	}
+	
+
+
+public void executCommand(String commandLine){
+	
+	String arr[] = commandLine.split(" ");
+	String command = arr[0];			
+	
+	if(!commands.containsKey(command)) {
+		view.displayMessage("Command doesn't exist");			
+	}
+	else {
+		String[] args = null;
+		if (arr.length > 1) {
+			String commandArgs = commandLine.substring(
+					commandLine.indexOf(" ") + 1);
+			args = commandArgs.split(" ");							
+		}
+		Command cmd = commands.get(command);
+		cmd.doCommand(args);	
+		}
+	}
+
+
+//for view
+public class DisplayMazeIsReady implements Command {
+
+	@Override
+	public void doCommand(String[] args) {
+		try {
+			String name =  args[0];
+		view.notifyMazeIsReady(name);
+			
+		} catch (Exception e) {
+			view.displayMessage("Wrong input,please try again!");
+		}
+
+	}		
+}
+	
 	/**
 	 * <h2>GenerateMazeCommand class<h2>
 	 * <p> implement Command interface and override the doCommand method
