@@ -160,7 +160,7 @@ public class MyModel implements Model {
 		
 		try {
 				if(!mazes.containsKey(name) || fileName==null){
-					controller.displayMessage("Error while trying to save the maze '"+name+"' into the the file "+fileName);
+					controller.displayMessage("Error while trying to save the maze "+name+" into the the file "+fileName);
 					return;
 				}
 				

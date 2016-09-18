@@ -32,7 +32,7 @@ import view.View;
  * @see view
  *
  */
-
+ 
 public class CommandsManager {
 	
 	private Model model;
