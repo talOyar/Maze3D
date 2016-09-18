@@ -7,8 +7,8 @@ import java.util.HashMap;
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
-import controller.Command;
-import controller.Controller;
+import presenter.Command;
+import presenter.Presenter;
 /**
  * <h2>View interface<h2>
  * <p> Holds ten methods to be override
@@ -31,7 +31,7 @@ public interface View {
 	void displayFolders(File[] path);
 	void notifySolutionIsReady(String name);
 	void displayMazeSolution(Solution<Position> solution);
-	void setController(Controller controller);
+	void setPresenter(Presenter presenter);
 	void start();
 	void displayMessage(String name);
 }

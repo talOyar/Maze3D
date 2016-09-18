@@ -5,9 +5,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.Observable;
 
-
-import controller.Command;
+import presenter.Command;
+import presenter.CommandsManager.exitCommand;
 
 /**
  * <h2>Class CLI<h2>
@@ -35,7 +36,7 @@ import controller.Command;
  */
 
 
-public class CLI {
+public class CLI extends Observable {
 	
 BufferedReader in;
 PrintWriter out;
@@ -72,7 +73,7 @@ public CLI (BufferedReader in ,PrintWriter out ){
 			out.println(i+"."+command);
 			i++;
 		}
-		//out.println(")");
+		
 		out.flush();
 	}
 	
@@ -90,51 +91,28 @@ public CLI (BufferedReader in ,PrintWriter out ){
 	public void start() {
 		
 Thread thread=new Thread(new  Runnable() {
-	public void run() {
-	
-			while(true){
-				
+		@Override
+		public void run() {
+			while (true) {
+			
 				printMenu();
 				try {
 					String commandLine = in.readLine();
-					String arr[] = commandLine.split(" ");
-					String command = arr[0];			
-					
-					if(!commands.containsKey(command)) {
-						out.println("Command doesn't exist");
-						out.flush();
-					}
-					else {
-						String[] args = null;
-						if (arr.length > 1) {
-							String commandArgs = commandLine.substring(
-									commandLine.indexOf(" ") + 1);
-							args = commandArgs.split(" ");							
-						}
-						Command cmd = commands.get(command);
-						cmd.doCommand(args);				
-
-						if (command.equals("exit")){
-							Command exit=commands.get(command);
-							exit.doCommand(null);;
-							break;
-						}
-					}
+					setChanged();
+					notifyObservers(commandLine);
+				
+					if (commandLine.equals("exit"))
+						break;
+				
 				} catch (IOException e) {
-					//out.println("Wrong input,please try again!");
-					//e.printStackTrace();
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
-	
+		}			
+	});
+		thread.start();
 	}
-		
-});
-
-thread.start();
-
-	}
-	
-
 }
 
 
