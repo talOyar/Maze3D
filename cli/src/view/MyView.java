@@ -5,12 +5,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.Observable;
+import java.util.Observer;
 
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
-import controller.Command;
-import controller.Controller;
+import presenter.Command;
+import presenter.Presenter;
 
 
 /**
@@ -25,28 +27,31 @@ import controller.Controller;
  * 
  * 
  * @see View
- * @see Controller
+ * @see Presenter
  */
 
-public class MyView implements View {
+public class MyView extends Observable implements View, Observer {
+
 	@SuppressWarnings("unused")
-	private Controller controller;
-	private CLI Cli;
+	private Presenter presenter;
+	private CLI cli;
+
 	@SuppressWarnings("unused")
 	private BufferedReader in;
 	private PrintWriter out;
 	 
 
 	public MyView(BufferedReader in, PrintWriter out) {
-		
-		Cli =new CLI(in,out);
 		this.in = in;
-		this.out = out;	
+		this.out = out;
+		
+		cli =new CLI(in,out);
+		cli.addObserver(this);
 	}
 	
 	
-	public void setController(Controller controller) {
-		this.controller = controller;
+	public void setPresenter(Presenter presenter) {
+		this.presenter = presenter;
 	}
 /**
  * <p>notifyMazeIsReady method
@@ -99,7 +104,7 @@ public class MyView implements View {
 	 */
 	@Override
 	public void setCommands(HashMap<String, Command> commands) {
-		Cli.setCommands(commands);
+		cli.setCommands(commands);
 	}
 	
 	/**
@@ -146,7 +151,7 @@ public class MyView implements View {
  */
 	@Override
 	public void start() {
-		Cli.start();
+		cli.start();
 		
 	}
 
@@ -161,6 +166,13 @@ public class MyView implements View {
 	}
 
 
+@Override
+public void update(Observable o, Object arg) {
+	if (o == cli){
+		setChanged();
+		notifyObservers(arg);		
+	}	
+}
 
 
 }

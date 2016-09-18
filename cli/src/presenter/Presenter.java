@@ -1,4 +1,4 @@
-package controller;
+package presenter;
 /**
  * <h2> Controller Interface<h2>
  * <p> implemented by MYController class
@@ -8,13 +8,13 @@ package controller;
  * @since 09-15-2016
  * @version 1.0
  * 
- *@see MyController
+ *@see MyPresenter
  *
  */
 
 
-public interface Controller {
-	//view.print "the maze is ready   
+public interface Presenter {
+	//view.print "the maze is ready"   
 	public void notifyMazeIsReady(String namemaze);
 	public void notifySolutionIsReady(String name);
 	public void displayMessage(String msg);

@@ -8,6 +8,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
+import java.util.Observable;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -22,9 +24,9 @@ import algorithms.search.Bfs;
 import algorithms.search.CommonSearcher;
 import algorithms.search.Dfs;
 import algorithms.search.Solution;
-import controller.Controller;
 import io.MyCompressorOutputStream;
 import io.MyDecompressorInputStream;
+import presenter.Presenter;
 
 /**
  * <h2> MyModel  <h2>
@@ -37,14 +39,14 @@ import io.MyDecompressorInputStream;
  * @since 09-15-2016
  * @version 1.0
  * 
- *@see Controller
+ *@see Presenter
  *@see View
  *@see Model
  *@see CommandManager 
  */
-public class MyModel implements Model {
+public class MyModel extends Observable implements Model {
 	
-	private Controller controller;
+	private Presenter presenter;
 	private Map<String, Maze3d> mazes = new ConcurrentHashMap<String, Maze3d>();
 	private Map<String, Solution<Position>> solutions = new ConcurrentHashMap<String,Solution<Position>>();
 	private ExecutorService threadPool;
@@ -53,6 +55,7 @@ public class MyModel implements Model {
 	public MyModel() {
 		
 		threadPool = Executors.newFixedThreadPool(20);
+		
 	}
 	
 /**
@@ -66,15 +69,16 @@ public class MyModel implements Model {
 	
 	@Override
 	public void generateMaze(String namemaze, int levels, int rows, int cols) {
-		threadPool.execute(new Runnable(){
+		threadPool.submit(new Callable<Maze3d>(){
 			
-			public void run(){
-				
+			@Override
+			public Maze3d call() throws Exception {
 				GrowingTreeGenerator Generator =new GrowingTreeGenerator(new ChoseLastCell());
 				Maze3d maze = Generator.generate(levels, rows, cols);
 				mazes.put(namemaze, maze);
-				//controller send the request to view
-				controller.notifyMazeIsReady(namemaze);
+				setChanged();
+				notifyObservers("The maze '"+namemaze+"' is ready!");
+				return maze;
 			}
 		});
 
@@ -85,8 +89,8 @@ public class MyModel implements Model {
  * <p>sets the controller of the model
  */
 	@Override
-	public void setController(Controller controller) {
-		this.controller=controller;		
+	public void setPresenter(Presenter presenter) {
+		this.presenter=presenter;
 	}
 /**
  * <p>getMaze method
@@ -98,7 +102,7 @@ public class MyModel implements Model {
 	public Maze3d getMaze(String name) {
 		
 		if(!mazes.containsKey(name)){
-			controller.displayMessage("Maze does not exist!");
+			presenter.displayMessage("Maze does not exist!");
 			
 		}
 		else
@@ -117,7 +121,7 @@ public class MyModel implements Model {
 	 */
 	public int[][] getCrossSection(String crossby , int index , String name) {
 		if(!mazes.containsKey(name)){
-			controller.displayMessage("Maze does not exist!");
+			presenter.displayMessage("Maze does not exist!");
 		}
 		else{
 		Maze3d maze =  mazes.get(name);
@@ -160,7 +164,9 @@ public class MyModel implements Model {
 		
 		try {
 				if(!mazes.containsKey(name) || fileName==null){
-					controller.displayMessage("Error while trying to save the maze "+name+" into the the file "+fileName);
+
+					presenter.displayMessage("Error while trying to save the maze "+name+" into the the file "+fileName);
+
 					return;
 				}
 				
@@ -175,11 +181,11 @@ public class MyModel implements Model {
 				out.write(maze);
 				out.flush();
 				out.close();
-				controller.displayMessage("The maze '"+name +"' saved Successfully to the file "+fileName);
+				presenter.displayMessage("The maze '"+name +"' saved Successfully to the file "+fileName);
 			}
 		
 			catch (IOException e) {
-				controller.displayMessage("Error while trying to save the maze '"+name+"' into the file "+fileName);
+				presenter.displayMessage("Error while trying to save the maze '"+name+"' into the file "+fileName);
 							}	
 	
 		}
@@ -212,12 +218,12 @@ public class MyModel implements Model {
 			//if maze is not null add it to mazes then print a message to the user.
 			if (maze!=null){
 				mazes.put(name, maze);
-			controller.displayMessage("The maze '"+name+"' loaded Successfully from the file "+fileName+"!");
+				presenter.displayMessage("The maze '"+name+"' loaded Successfully from the file "+fileName+"!");
 			}
 		}
 		
 		catch(Exception e){
-			controller.displayMessage("Error while trying to load maze from the file "+fileName+"!");
+			presenter.displayMessage("Error while trying to load maze from the file "+fileName+"!");
 			
 			}
 		}
@@ -231,14 +237,13 @@ public class MyModel implements Model {
 	public void solveMaze3d(String name, String algorithm) {
 		
 		
-		threadPool.execute(new Runnable() {
+		threadPool.submit(new Callable<Solution<Position>>(){ 
 			
 			@Override
-			public void run() {
-				
+			public Solution<Position> call() throws Exception {
 				if(!mazes.containsKey(name)){
-					controller.displayMessage("Maze does not exist!");
-					return;
+					presenter.displayMessage("Maze does not exist!");
+					return null;
 				}
 				
 				else{
@@ -250,20 +255,26 @@ public class MyModel implements Model {
 					CommonSearcher<Position> searcher = new Bfs<Position>();
 					Solution<Position> solution=searcher.search(searchableMaze);
 					solutions.put(name, solution);
-					controller.notifySolutionIsReady(name);
+					setChanged();
+					notifyObservers("The solution for the maze '"+name+"' is ready!");	
+					//presenter.notifySolutionIsReady(name);
 					
 				}
 				else if(algorithm.equalsIgnoreCase("dfs")){
 					CommonSearcher<Position> searcher = new Dfs<Position>();
 					Solution<Position> solution=searcher.search(searchableMaze);
 					solutions.put(name, solution);
-					controller.notifySolutionIsReady(name);
+					
+					setChanged();
+					notifyObservers("The solution for the maze '"+name+"' is ready!");	
+					//presenter.notifySolutionIsReady(name);
 					
 				}
 				else{
-					controller.displayMessage("Wrong algorithm choice!");
+					notifyObservers("Wrong algorithm choice!");
 						}
 				}
+				return null;
 			}
 		});
 		
@@ -278,7 +289,8 @@ public class MyModel implements Model {
 		
 		if(!solutions.containsKey(name)){
 			
-			controller.displayMessage("No solution for this maze yet!");
+			notifyObservers("No solution for this maze yet!");	
+			//presenter.displayMessage("No solution for this maze yet!");
 			return null;
 				}
 		
@@ -305,16 +317,15 @@ public class MyModel implements Model {
 				
 			} 
 			catch (InterruptedException e) {
-				controller.displayMessage("The program did not terminated properly!");
+				presenter.displayMessage("The program did not terminated properly!");
 				e.printStackTrace();
 			}
 		}
 		
 		if(terminated){
-			controller.displayMessage("Program terminated!");}
-
-
+			presenter.displayMessage("Program terminated!");}
 	}
+
 	
 }
 	

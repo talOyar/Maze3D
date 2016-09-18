@@ -4,10 +4,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
-import controller.Controller;
-import controller.MyController;
 import model.Model;
 import model.MyModel;
+import presenter.MyPresenter;
+import presenter.Presenter;
 import view.MyView;
 import view.View;
 
@@ -20,12 +20,12 @@ public static void main(String[] args) {
 	BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 	PrintWriter out = new PrintWriter(System.out);
 			
-	View view = new MyView(in, out);
-	Model model = new MyModel();
+	MyView view = new MyView(in, out);
+	MyModel model = new MyModel();
 	
-	Controller controller = new MyController(view, model);
-	view.setController(controller);
-	model.setController(controller);
+	MyPresenter presenter = new MyPresenter(view, model);
+	model.addObserver(presenter);
+	view.addObserver(presenter);
 	
 	view.start();
 }

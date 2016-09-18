@@ -1,9 +1,9 @@
 
+package presenter;
 
-
-
-package controller;
-
+import java.util.HashMap;
+import java.util.Observer;
+import java.util.Observable;
 import model.Model;
 import view.View;
 /**
@@ -18,16 +18,17 @@ import view.View;
  * @since 09-15-2016
  * @version 1.0
  * 
- *@see Controller
+ *@see Presenter
  *@see View
  *@see Model
  *@see CommandManager 
  */
-public class MyController implements Controller{
+public class MyPresenter implements  Presenter , Observer {
 	private View view;
 	@SuppressWarnings("unused")
 	private Model model;
 	private CommandsManager commandsManager;
+	private HashMap<String, Command> commands;
 	/**
 	 * <p> contractor -initialize with view and model also generate a commandManager
 	 * and with the view and model.
@@ -35,13 +36,13 @@ public class MyController implements Controller{
 	 * @param view
 	 * @param model
 	 */
-	public MyController(View view, Model model) {
+	public MyPresenter(View view, Model model) {
 		this.view = view;
-		this.model = model;
-		
+		this.model = model;	
 		commandsManager = new CommandsManager(model,view);
+		commands = commandsManager.getCommandsMap();
 		//return : view.commands HashMap (maze & display)   
-		view.setCommands(commandsManager.getCommandsMap());
+		view.setCommands(commands);
 	}
 	
 	/**
@@ -69,7 +70,6 @@ public class MyController implements Controller{
 		
 	}
 
-	
 	/**
 	 * <p> displayMessage method
 	 * <p> display a message to the output(user) using the view displayMessage method
@@ -79,5 +79,34 @@ public class MyController implements Controller{
 	public void displayMessage(String msg) {
 		view.displayMessage(msg);		
 	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+			if (o == view) {
+				String commandLine = (String)arg;
+				
+				String arr[] = commandLine.split(" ");
+				String command = arr[0];			
+				
+				if(!commands.containsKey(command)) {
+					view.displayMessage("Command doesn't exist");			
+				}
+				else {
+					String[] args = null;
+					if (arr.length > 1) {
+						String commandArgs = commandLine.substring(
+								commandLine.indexOf(" ") + 1);
+						args = commandArgs.split(" ");							
+					}
+					Command cmd = commands.get(command);
+					cmd.doCommand(args);	
+				}
+			}
+
+		if (o == model) {
+			view.displayMessage((String)arg);				
+		}
+	}
+
 
 }
