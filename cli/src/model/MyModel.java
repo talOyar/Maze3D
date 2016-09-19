@@ -32,6 +32,8 @@ import algorithms.search.Solution;
 import io.MyCompressorOutputStream;
 import io.MyDecompressorInputStream;
 import presenter.Presenter;
+import presenter.Properties;
+import presenter.PropertiesLoader;
 
 /**
  * <h2> MyModel  <h2>
@@ -54,10 +56,11 @@ public class MyModel extends Observable implements Model {
 	private Map<String, Maze3d> mazes = new ConcurrentHashMap<String, Maze3d>();
 	private Map<String, Solution<Position>> solutions = new ConcurrentHashMap<String,Solution<Position>>();
 	private ExecutorService threadPool;
-		
+	private Presenter presenter;
+	private Properties properties;	
 	public MyModel() {
-		
-		threadPool = Executors.newFixedThreadPool(20);
+		properties=PropertiesLoader.getInstance().getProperties();
+		threadPool = Executors.newFixedThreadPool(properties.getNumOfTheards());
 		loadSolutions();
 		
 	}
