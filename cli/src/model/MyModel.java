@@ -4,8 +4,11 @@ package model;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.Map;
 import java.util.Observable;
@@ -14,6 +17,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import algorithms.demo.SearchableMaze3d;
 import algorithms.mazeGenerators.ChoseLastCell;
@@ -46,15 +51,14 @@ import presenter.Presenter;
  */
 public class MyModel extends Observable implements Model {
 	
-	private Presenter presenter;
 	private Map<String, Maze3d> mazes = new ConcurrentHashMap<String, Maze3d>();
 	private Map<String, Solution<Position>> solutions = new ConcurrentHashMap<String,Solution<Position>>();
 	private ExecutorService threadPool;
-	private Map<Maze3d,Solution<Position>> calculatedSolutions=new ConcurrentHashMap<Maze3d,Solution<Position>>();
 		
 	public MyModel() {
 		
 		threadPool = Executors.newFixedThreadPool(20);
+		loadSolutions();
 		
 	}
 	
@@ -113,8 +117,71 @@ public class MyModel extends Observable implements Model {
 		return mazes.get(name);
 		
 		return null;
+	}
+	public void  SaveSolutions(){
+		ObjectOutputStream save=null;
+		try {
+			save=new ObjectOutputStream(new GZIPOutputStream(new FileOutputStream("solutions.dat")));
+			save.writeObject(mazes);
+			save.writeObject(solutions);			
+			
+		} catch (FileNotFoundException e) {
+				setChanged();
+				notifyObservers("display_message Error while trying to save the solution into the file!");
+		} catch (IOException e) {
+			setChanged();
+			notifyObservers("display_message Error while trying to save the solution into the file!");
+		}finally {
+			try {
+				save.close();
+			} catch (IOException e) {
+				setChanged();
+				notifyObservers("display_message Error while trying to close the file!");
+			}
+		}
 		
-	}	
+	}
+	
+	
+@SuppressWarnings("unchecked")
+public void loadSolutions(){
+	File file = new File("solutions.dat");
+	if (!file.exists()){
+	setChanged();
+	notifyObservers("display_message File do not exist!");
+		return;
+	}
+	
+	ObjectInputStream load = null;
+
+	try {
+		load = new ObjectInputStream(new GZIPInputStream(new FileInputStream("solutions.dat")));
+		mazes = (Map<String,Maze3d>)load.readObject();
+		solutions = (Map<String, Solution<Position>>)load.readObject();	
+		
+	} catch (FileNotFoundException e) {
+		setChanged();
+		notifyObservers("display_message Error while trying to save the solution into the file!");
+	}
+	catch (IOException e) {
+		setChanged();
+		notifyObservers("display_message Error while trying to save the solution into the file!");
+	}
+	catch (ClassNotFoundException e) {
+		setChanged();
+		notifyObservers("display_message Error while trying to save the solution into the file!");
+	} 
+	finally{
+		try {
+			load.close();
+		}
+		catch (IOException e) {
+			setChanged();
+			notifyObservers("display_message Error while trying to close the file!");
+		}
+	}		
+	
+}	
 	
 	/**
 	 * <p>getCrossSection method
@@ -345,6 +412,7 @@ public class MyModel extends Observable implements Model {
 			setChanged();
 			notifyObservers("display_message Program terminated!");
 			//presenter.displayMessage("Program terminated!");}
+			SaveSolutions();
 	}
 
 	}
