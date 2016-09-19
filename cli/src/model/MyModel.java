@@ -50,7 +50,7 @@ public class MyModel extends Observable implements Model {
 	private Map<String, Maze3d> mazes = new ConcurrentHashMap<String, Maze3d>();
 	private Map<String, Solution<Position>> solutions = new ConcurrentHashMap<String,Solution<Position>>();
 	private ExecutorService threadPool;
-
+	private Map<Maze3d,Solution<Position>> calculatedSolutions=new ConcurrentHashMap<Maze3d,Solution<Position>>();
 		
 	public MyModel() {
 		
@@ -77,7 +77,8 @@ public class MyModel extends Observable implements Model {
 				Maze3d maze = Generator.generate(levels, rows, cols);
 				mazes.put(namemaze, maze);
 				setChanged();
-				notifyObservers("The maze '"+namemaze+"' is ready!");
+				notifyObservers("maze_ready "+namemaze);
+				
 				return maze;
 			}
 		});
@@ -92,6 +93,7 @@ public class MyModel extends Observable implements Model {
 	public void setPresenter(Presenter presenter) {
 		this.presenter=presenter;
 	}
+	
 /**
  * <p>getMaze method
  * <p> receives a string of the maze name and return the maze
@@ -102,7 +104,9 @@ public class MyModel extends Observable implements Model {
 	public Maze3d getMaze(String name) {
 		
 		if(!mazes.containsKey(name)){
-			presenter.displayMessage("Maze does not exist!");
+			setChanged();
+			notifyObservers("display_message "+"maze does not exist!");
+			//presenter.displayMessage("Maze does not exist!");
 		}
 		else
 	
@@ -120,7 +124,8 @@ public class MyModel extends Observable implements Model {
 	 */
 	public int[][] getCrossSection(String crossby , int index , String name) {
 		if(!mazes.containsKey(name)){
-			presenter.displayMessage("Maze does not exist!");
+			setChanged();
+			notifyObservers("display_message "+"Maze does not exist!");
 		}
 		else{
 		Maze3d maze =  mazes.get(name);
@@ -163,8 +168,8 @@ public class MyModel extends Observable implements Model {
 		
 		try {
 				if(!mazes.containsKey(name) || fileName==null){
-
-					presenter.displayMessage("Error while trying to save the maze "+name+" into the the file "+fileName);
+					setChanged();
+					notifyObservers("display_message Error while trying to save the maze");
 
 					return;
 				}
@@ -180,11 +185,16 @@ public class MyModel extends Observable implements Model {
 				out.write(maze);
 				out.flush();
 				out.close();
-				presenter.displayMessage("The maze '"+name +"' saved Successfully to the file "+fileName);
+				setChanged();
+				notifyObservers("display_message The maze '"+name+"' saved successfully to the file "+ fileName);
+				//presenter.displayMessage("The maze '"+name +"' saved Successfully to the file "+fileName);
 			}
 		
 			catch (IOException e) {
-				presenter.displayMessage("Error while trying to save the maze '"+name+"' into the file "+fileName);
+				setChanged();
+				notifyObservers("display_message Error while trying to save the maze '"+name+"' into the file"+ fileName );
+				
+				//presenter.displayMessage("Error while trying to save the maze '"+name+"' into the file "+fileName);
 							}	
 	
 		}
@@ -217,12 +227,16 @@ public class MyModel extends Observable implements Model {
 			//if maze is not null add it to mazes then print a message to the user.
 			if (maze!=null){
 				mazes.put(name, maze);
-				presenter.displayMessage("The maze '"+name+"' loaded Successfully from the file "+fileName+"!");
+				setChanged();
+				notifyObservers("display_message "+"The maze '"+name+"' loaded Successfully from the file "+fileName+"!");
+				//presenter.displayMessage("The maze '"+name+"' loaded Successfully from the file "+fileName+"!");
 			}
 		}
 		
 		catch(Exception e){
-			presenter.displayMessage("Error while trying to load maze from the file "+fileName+"!");
+			setChanged();
+			notifyObservers("display_message Error while trying to load the maze from the file "+fileName+"!");
+			//presenter.displayMessage("Error while trying to load maze from the file "+fileName+"!");
 			
 			}
 		}
@@ -234,14 +248,19 @@ public class MyModel extends Observable implements Model {
  */
 	@Override
 	public void solveMaze3d(String name, String algorithm) {
-		
-		
+		if(solutions.containsKey(name)){
+			setChanged();
+			notifyObservers("solution_ready"+name);
+		}
+			
 		threadPool.submit(new Callable<Solution<Position>>(){ 
 			
 			@Override
 			public Solution<Position> call() throws Exception {
 				if(!mazes.containsKey(name)){
-					presenter.displayMessage("Maze does not exist!");
+					setChanged();
+					notifyObservers("display_message Maze does not exist!");
+					//presenter.displayMessage("Maze does not exist!");
 					return null;
 				}
 				
@@ -255,8 +274,7 @@ public class MyModel extends Observable implements Model {
 					Solution<Position> solution=searcher.search(searchableMaze);
 					solutions.put(name, solution);
 					setChanged();
-					notifyObservers("The solution for the maze '"+name+"' is ready!");	
-					//presenter.notifySolutionIsReady(name);
+					notifyObservers("solution_ready "+name);	
 					
 				}
 				else if(algorithm.equalsIgnoreCase("dfs")){
@@ -265,12 +283,12 @@ public class MyModel extends Observable implements Model {
 					solutions.put(name, solution);
 					
 					setChanged();
-					notifyObservers("The solution for the maze '"+name+"' is ready!");	
-					//presenter.notifySolutionIsReady(name);
+					notifyObservers("solution_ready "+name);	
 					
 				}
 				else{
-					notifyObservers("Wrong algorithm choice!");
+					setChanged();
+					notifyObservers("display_message "+"Wrong algorithm choice!");
 						}
 				}
 				return null;
@@ -287,8 +305,8 @@ public class MyModel extends Observable implements Model {
 	public Solution<Position> getMazeSolution(String name) {
 		
 		if(!solutions.containsKey(name)){
-			
-			notifyObservers("No solution for this maze yet!");	
+			setChanged();
+			notifyObservers("display_message No solution for this maze yet!");	
 			//presenter.displayMessage("No solution for this maze yet!");
 			return null;
 				}
@@ -316,16 +334,20 @@ public class MyModel extends Observable implements Model {
 				
 			} 
 			catch (InterruptedException e) {
-				presenter.displayMessage("The program did not terminated properly!");
+				setChanged();
+				notifyObservers("display_message The program did not terminated properly");
+				//presenter.displayMessage("The program did not terminated properly!");
 				e.printStackTrace();
 			}
 		}
 		
 		if(terminated){
-			presenter.displayMessage("Program terminated!");}
+			setChanged();
+			notifyObservers("display_message Program terminated!");
+			//presenter.displayMessage("Program terminated!");}
 	}
 
-	
+	}
 }
 	
 

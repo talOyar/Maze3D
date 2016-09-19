@@ -64,6 +64,10 @@ public class CommandsManager {
 		commands.put("directory", new getPathCommand());
 		commands.put("exit", new exitCommand());
 		commands.put("maze_ready", new DisplayMazeIsReady());
+		commands.put("solution_ready", new DisplaySolutionIsReady());
+		commands.put("display_message", new DisplayMessage());
+		
+
 		return commands;
 	}
 	
@@ -77,6 +81,7 @@ public void executCommand(String commandLine){
 	if(!commands.containsKey(command)) {
 		view.displayMessage("Command doesn't exist");			
 	}
+	
 	else {
 		String[] args = null;
 		if (arr.length > 1) {
@@ -84,13 +89,40 @@ public void executCommand(String commandLine){
 					commandLine.indexOf(" ") + 1);
 			args = commandArgs.split(" ");							
 		}
+		
 		Command cmd = commands.get(command);
 		cmd.doCommand(args);	
 		}
 	}
 
 
-//for view
+public class DisplayMessage implements Command{
+
+	@Override
+	public void doCommand(String[] args) {
+		StringBuilder msg = new StringBuilder();
+		for (String s : args) {
+			msg.append(s + " ");
+		}
+		view.displayMessage(msg.toString());
+		
+	}
+	
+}
+// display msg to the user when the solution is ready 
+public class DisplaySolutionIsReady implements Command{
+
+	@Override
+	public void doCommand(String[] args) {
+		String name=args[0];
+		view.notifySolutionIsReady(name);
+		
+		
+	}
+	
+	
+}
+// display a msg to the user when the maze is ready
 public class DisplayMazeIsReady implements Command {
 
 	@Override

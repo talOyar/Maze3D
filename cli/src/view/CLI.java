@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Observable;
 
 import presenter.Command;
-import presenter.CommandsManager.exitCommand;
 
 /**
  * <h2>Class CLI<h2>
@@ -68,15 +67,21 @@ public CLI (BufferedReader in ,PrintWriter out ){
 	 */
 	
 	private void printMenu() {
-		int i=1;
-		out.println("Choose command: ");
-		for (String command : commands.keySet()) {
-			out.println(i+"."+command);
-			i++;
+		out.println("**Command Menu**");
+		out.println("(1.)generate_maze- enter the name of the maze and 3 demention sizes");
+		out.println("(2.)display_maze- enter the name of the maze to display");
+		out.println("(3.)solve_maze- enter the name of the maze to be solved and the desired algorithm to solve with");
+		out.println("(4.)display_solution- enter the name of the maze to get the solution");
+		out.println("(5.)display_cross_section- enter the name of the maze the section and the index of the section ");
+		out.println("(6.)save_maze- enter the name of the maze to be solved and the name of the file to save into ");
+		out.println("(7.)load_maze- enter the name of the maze to load and the name of the file to load it from ");
+		out.println("(8.)directory- enter a path ");
+		out.println("(9.)exit ");
+
+		out.flush();
 		}
 		
-		out.flush();
-	}
+	
 	
 
 	/**
@@ -94,6 +99,7 @@ public CLI (BufferedReader in ,PrintWriter out ){
 Thread thread=new Thread(new  Runnable() {
 		@Override
 		public void run() {
+			
 			while (true) {
 			
 				printMenu();

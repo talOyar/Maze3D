@@ -5,7 +5,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 import model.MyModel;
-import presenter.MyPresenter;
+import presenter.Presenter;
 import view.MyView;
 public class Run {
 	
@@ -19,7 +19,7 @@ public static void main(String[] args) {
 	MyView view = new MyView(in, out);
 	MyModel model = new MyModel();
 	
-	MyPresenter presenter = new MyPresenter(view, model);
+	Presenter presenter = new Presenter(view, model);
 	model.addObserver(presenter);
 	view.addObserver(presenter);
 	
