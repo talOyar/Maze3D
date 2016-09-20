@@ -4,6 +4,7 @@ import java.beans.XMLDecoder;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
+
 public class PropertiesLoader {
 	
 	private static PropertiesLoader instance;
@@ -13,7 +14,7 @@ public class PropertiesLoader {
 	public Properties getProperties() {
 		return properties;
 	}
-	
+
 	public void setProperties(Properties properties) {
 		this.properties = properties;
 	}
