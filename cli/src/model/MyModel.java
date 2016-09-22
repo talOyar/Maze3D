@@ -58,9 +58,11 @@ public class MyModel extends Observable implements Model {
 	private ExecutorService threadPool;
 	private Presenter presenter;
 	private Properties properties;	
+	
 	public MyModel() {
+		
 		properties=PropertiesLoader.getInstance().getProperties();
-		threadPool = Executors.newFixedThreadPool(properties.getNumOfTheards());
+		threadPool = Executors.newFixedThreadPool(properties.getNumOfThreads());
 		loadSolutions();
 		
 	}
