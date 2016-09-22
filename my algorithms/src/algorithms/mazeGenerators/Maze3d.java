@@ -1,10 +1,13 @@
 
 package algorithms.mazeGenerators;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Maze3d {
+public class Maze3d implements Serializable{
+
+private static final long serialVersionUID = 1L;
 private int rows;
 private int cols;
 private int levels;

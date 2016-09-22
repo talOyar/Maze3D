@@ -85,6 +85,7 @@ public class MyModel extends Observable implements Model {
 				GrowingTreeGenerator Generator =new GrowingTreeGenerator(new ChoseLastCell());
 				Maze3d maze = Generator.generate(levels, rows, cols);
 				mazes.put(namemaze, maze);
+				
 				setChanged();
 				notifyObservers("maze_ready "+namemaze);
 				
@@ -123,29 +124,59 @@ public class MyModel extends Observable implements Model {
 		
 		return null;
 	}
+	
 	public void  SaveSolutions(){
-		ObjectOutputStream save=null;
+		
+
+		ObjectOutputStream oos = null;
 		try {
-			save=new ObjectOutputStream(new GZIPOutputStream(new FileOutputStream("solutions.dat")));
-			save.writeObject(mazes);
-			save.writeObject(solutions);			
+		    oos = new ObjectOutputStream(new GZIPOutputStream(new FileOutputStream("solutions.dat")));
+			oos.writeObject(mazes);
+			oos.writeObject(solutions);			
 			
 		} catch (FileNotFoundException e) {
-				setChanged();
-				notifyObservers("display_message Error while trying to save the solution into the file!");
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (IOException e) {
-			setChanged();
-			notifyObservers("display_message Error while trying to save the solution into the file!");
-		}finally {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+		} finally {
 			try {
-				save.close();
+				oos.close();
 			} catch (IOException e) {
-				setChanged();
-				notifyObservers("display_message Error while trying to close the file!");
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
-		
 	}
+		
+		
+//		
+//		ObjectOutputStream save=null;
+//		
+//		try {
+//			save=new ObjectOutputStream(new GZIPOutputStream(new FileOutputStream("solutions.dat")));
+//			save.writeObject(mazes);
+//			save.writeObject(solutions);			
+//			
+//		} catch (FileNotFoundException e) {
+//				setChanged();
+//				notifyObservers("display_message Error while trying to save the solution into the file!");
+//		} catch (IOException e) {
+//			setChanged();
+//			notifyObservers("display_message Error while trying to save the solution into the file!");
+//		}finally {
+//			try {
+//				save.close();
+//			} catch (IOException e) {
+//				
+//				setChanged();
+//				notifyObservers("display_message Error while trying to close the file!");
+//			}
+//		}
+//		
+//	}
 	
 	
 @SuppressWarnings("unchecked")
