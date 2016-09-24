@@ -24,5 +24,12 @@ public interface Model {
 	Solution<Position> getMazeSolution(String name);
 	void setPresenter(Presenter presenter);
 	void exit();
+	void loadXML(String string);
+	void goRight();
+	void goLeft();
+	void goForward();
+	void goBackward();
+	void goUp();
+	void goDown();
 	
 }

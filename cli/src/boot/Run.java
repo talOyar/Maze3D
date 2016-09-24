@@ -17,8 +17,8 @@ public static void main(String[] args) {
 	BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 	PrintWriter out = new PrintWriter(System.out);
 	
-	//MazeWindow view=new MazeWindow();
-	MyView view = new MyView(in, out);
+	MazeWindow view=new MazeWindow();
+	//MyView view = new MyView(in, out);
 	MyModel model = new MyModel();
 	
 	

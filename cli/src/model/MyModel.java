@@ -2,6 +2,7 @@
 package model;
 
 
+import java.beans.XMLDecoder;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -51,13 +52,31 @@ import presenter.PropertiesLoader;
  *@see Model
  *@see CommandManager 
  */
+
 public class MyModel extends Observable implements Model {
-	
+	private Maze3d currentMaze;
 	private Map<String, Maze3d> mazes = new ConcurrentHashMap<String, Maze3d>();
 	private Map<String, Solution<Position>> solutions = new ConcurrentHashMap<String,Solution<Position>>();
 	private ExecutorService threadPool;
 	private Presenter presenter;
 	private Properties properties;	
+	
+	
+	
+	
+	
+	@Override
+	public void loadXML(String xml) {
+		try {
+			XMLDecoder decoder= new XMLDecoder(new FileInputStream(xml));
+			properties=(Properties)decoder.readObject();
+			decoder.close();
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+	}
 	
 	public MyModel() {
 		
@@ -127,56 +146,30 @@ public class MyModel extends Observable implements Model {
 	
 	public void  SaveSolutions(){
 		
-
-		ObjectOutputStream oos = null;
+		ObjectOutputStream save=null;
+		
 		try {
-		    oos = new ObjectOutputStream(new GZIPOutputStream(new FileOutputStream("solutions.dat")));
-			oos.writeObject(mazes);
-			oos.writeObject(solutions);			
+			save=new ObjectOutputStream(new GZIPOutputStream(new FileOutputStream("solutions.dat")));
+			save.writeObject(mazes);
+			save.writeObject(solutions);			
 			
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+				setChanged();
+				notifyObservers("display_message Error while trying to save the solution into the file!");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			
-		} finally {
+			setChanged();
+			notifyObservers("display_message Error while trying to save the solution into the file!");
+		}finally {
 			try {
-				oos.close();
+				save.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				
+				setChanged();
+				notifyObservers("display_message Error while trying to close the file!");
 			}
 		}
+		
 	}
-		
-		
-//		
-//		ObjectOutputStream save=null;
-//		
-//		try {
-//			save=new ObjectOutputStream(new GZIPOutputStream(new FileOutputStream("solutions.dat")));
-//			save.writeObject(mazes);
-//			save.writeObject(solutions);			
-//			
-//		} catch (FileNotFoundException e) {
-//				setChanged();
-//				notifyObservers("display_message Error while trying to save the solution into the file!");
-//		} catch (IOException e) {
-//			setChanged();
-//			notifyObservers("display_message Error while trying to save the solution into the file!");
-//		}finally {
-//			try {
-//				save.close();
-//			} catch (IOException e) {
-//				
-//				setChanged();
-//				notifyObservers("display_message Error while trying to close the file!");
-//			}
-//		}
-//		
-//	}
 	
 	
 @SuppressWarnings("unchecked")
@@ -426,7 +419,7 @@ public void loadSolutions(){
 	 *<p> if a thread is still working it will wait until it will be terminated
 	 */
 	public void exit(){
-		
+		SaveSolutions();
 		threadPool.shutdown();
 		boolean terminated=false;
 
@@ -448,10 +441,47 @@ public void loadSolutions(){
 			setChanged();
 			notifyObservers("display_message Program terminated!");
 			//presenter.displayMessage("Program terminated!");}
-			SaveSolutions();
 	}
 
 	}
+
+	@Override
+	public void goRight() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void goLeft() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void goForward() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void goBackward() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void goUp() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void goDown() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 }
 	
 

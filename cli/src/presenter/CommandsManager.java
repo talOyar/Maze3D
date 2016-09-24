@@ -62,11 +62,16 @@ public class CommandsManager {
 		commands.put("save_maze",new saveMazeCommand());
 		commands.put("load_maze", new loadMazeCommand());
 		commands.put("directory", new getPathCommand());
-		commands.put("exit", new exitCommand());
+		commands.put("display_message",new DisplayMessage());
 		commands.put("maze_ready", new DisplayMazeIsReady());
-		commands.put("solution_ready", new DisplaySolutionIsReady());
-		commands.put("display_message", new DisplayMessage());
-		
+		commands.put("goRight", new goRightCommand());
+		commands.put("goLeft", new goLeftCommand());
+		commands.put("goForward", new goForwardCommand());
+		commands.put("goBackward", new goBackwardCommand());
+		commands.put("goUp", new goUpCommand());
+		commands.put("goDown", new goDownCommand());
+		commands.put("load_xml", new LoadXMLCommand());
+		commands.put("exit", new exitCommand());
 
 		return commands;
 	}
@@ -394,4 +399,72 @@ public class DisplayMazeIsReady implements Command {
 		
 	}
 	
-}
+	public class LoadXMLCommand implements Command {
+
+		@Override
+		public void doCommand(String[] args) {
+			if(args[0]==null)
+				view.displayMessage("wrong file input, please try again");
+			
+			model.loadXML(args[0]);
+		}
+		
+	}
+
+	
+	public class goRightCommand implements Command{
+
+		@Override
+		public void doCommand(String[] args) {
+			model.goRight();			
+		
+	}
+	}
+	public class goLeftCommand implements Command{
+
+		@Override
+		public void doCommand(String[] args) {
+			model.goLeft();			
+			
+		}
+		
+	}
+	public class goForwardCommand implements Command{
+
+		@Override
+		public void doCommand(String[] args) {
+			model.goForward();			
+			
+		}
+		
+	}
+	public class goBackwardCommand implements Command{
+
+		@Override
+		public void doCommand(String[] args) {
+			model.goBackward();			
+			
+		}
+		
+	}
+	public class goUpCommand implements Command{
+
+		@Override
+		public void doCommand(String[] args) {
+			model.goUp();			
+			
+		}
+		
+	}
+	public class goDownCommand implements Command{
+
+		@Override
+		public void doCommand(String[] args) {
+			model.goDown();			
+			
+		}
+		
+	}
+	
+	}
+
