@@ -8,9 +8,9 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -28,11 +28,15 @@ import presenter.Presenter;
 
 public class MazeWindow extends BasicWindow implements View {
 
+	/*************************DATA MEMBERS********************/
+		
 	private MazeDisplay mazeDisplay;
     int Qstyle = SWT.APPLICATION_MODAL | SWT.YES | SWT.NO;
     Maze3d maze;
+    
     Listener exitListener=new Listener() {    // exit handler
 		
+    	
 		@Override
 		public void handleEvent(Event arg0) {
 
@@ -49,11 +53,9 @@ public class MazeWindow extends BasicWindow implements View {
     
     
 	
-	
-	
-	
 	@Override
 	protected void initWidgets() {
+		
 		GridLayout gridLayout = new GridLayout(2, false);
 		shell.setLayout(gridLayout);
 		
@@ -61,22 +63,12 @@ public class MazeWindow extends BasicWindow implements View {
 		
 		 shell.addListener(SWT.Close,exitListener);
 		  
-		
-		 
+			 
 		// ***********buttons**********
-		
-		
-		//create the buttons group layout
-//		Composite btnGroup = new Composite(shell, SWT.BORDER);
-//		RowLayout rowLayout = new RowLayout(SWT.VERTICAL);
-//		btnGroup.setLayout(rowLayout);
-//	
-		
 		
 		
 		// button generate maze
 		
-		//Button btnGenerateMaze = new Button(btnGroup, SWT.PUSH);
 		 
 			Button btnGenerateMaze = new Button(shell, SWT.PUSH);
 			btnGenerateMaze.setLayoutData(new GridData(SWT.FILL,SWT.NONE, false,false,1, 1));
@@ -99,17 +91,17 @@ public class MazeWindow extends BasicWindow implements View {
 				
 			}
 		});
+
 		
 		mazeDisplay=new MazeDisplay(shell, SWT.BORDER);
-		
-		//Text t=new Text(shell, SWT.BORDER);
 		mazeDisplay.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 5));
 		
-		
+		//Text t=new Text(shell, SWT.BORDER);
+		//t.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 5));
+
 		
 		
 		// display maze button
-		//Button btnDisplayMaze = new Button(grp, SWT.PUSH);
 
 		Button btnDisplayMaze = new Button(shell, SWT.PUSH);
 		btnDisplayMaze.setLayoutData(new GridData(SWT.FILL,SWT.NONE, false,false,1, 1));
@@ -135,7 +127,6 @@ public class MazeWindow extends BasicWindow implements View {
 		
 		//get an hint button
 		
-		//Button btnHintMaze = new Button(btnGroup, SWT.PUSH|SWT.FILL);
 		Button btnHintMaze = new Button(shell, SWT.PUSH|SWT.FILL);
 		btnHintMaze.setLayoutData(new GridData(SWT.FILL,SWT.NONE, false,false,1, 1));
 		
@@ -160,9 +151,8 @@ public class MazeWindow extends BasicWindow implements View {
 		
 		
 		
-		// solve maze button
+		//******************* solve maze button************************/
 		
-		//Button btnSolveMaze = new Button(btnGroup, SWT.PUSH|SWT.FILL);
 		Button btnSolveMaze = new Button(shell, SWT.PUSH|SWT.FILL);
 		btnSolveMaze.setLayoutData(new GridData(SWT.FILL,SWT.NONE, false,false,1, 1));
 
@@ -185,7 +175,7 @@ public class MazeWindow extends BasicWindow implements View {
 		});
 		
 		
-		// **************exit button****************
+		//**************exit button****************/
 		
 		//Button btnExit = new Button(btnGroup, SWT.PUSH|SWT.FILL);
 		Button btnExit = new Button(shell, SWT.PUSH|SWT.FILL);
@@ -196,8 +186,6 @@ public class MazeWindow extends BasicWindow implements View {
 
 		btnExit.addListener(SWT.Selection,exitListener);
 
-		
-		
 		
 		
 		
@@ -221,7 +209,8 @@ public class MazeWindow extends BasicWindow implements View {
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				
+			FileDialog fd=new FileDialog(shell, SWT.BORDER);
+			fd.setText("open");
 					setChanged();
 					notifyObservers("load_xml");
 			}
@@ -238,6 +227,7 @@ public class MazeWindow extends BasicWindow implements View {
 		exitItem.setText("Exit");
 		exitItem.addListener(SWT.Selection,exitListener);
 
+		
 		
 		// creating the help menu
 		Menu helpMenu = new Menu(barMenu);
@@ -274,17 +264,9 @@ public class MazeWindow extends BasicWindow implements View {
 		//adding the bar menu to the shell
 		shell.setMenuBar(barMenu);
 		
-		
 	}
 	
 
-	
-	
-	
-	
-	
-	
-	
 	
 	protected void showGenerateMazeOptions() {
 		
@@ -319,15 +301,21 @@ public class MazeWindow extends BasicWindow implements View {
 		Button btnGenerate = new Button(shell, SWT.PUSH);
 		btnGenerate.setText("Generate");
 		btnGenerate.addSelectionListener(new SelectionListener() {
-	
 		
 			//sending the generate maze command with the data to the presenter
+			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				setChanged();
 				notifyObservers("generate_maze " +txtName.getText()+" "+txtLevels.getText()+" "+ txtRows.getText() + " " + txtCols.getText());
+				setChanged();
+				
+				notifyObservers("display_maze "+txtName.getText());
 				shell.close();
+				
+				
 			}
+			
 			
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -337,14 +325,17 @@ public class MazeWindow extends BasicWindow implements View {
 		});
 		
 		
+		
 		//creating a maze display window
 		
 		shell.open();		
 	}
 
 	
+	
 	@Override
 	public void notifyMazeIsReady(String name) {
+	
 		
 		display.syncExec(new Runnable() {
 			
@@ -354,8 +345,8 @@ public class MazeWindow extends BasicWindow implements View {
 				msg.setMessage("Maze " + name + " is ready");
 				msg.open();	
 				
-				setChanged();
-				notifyObservers("display_maze " + name);
+				
+				
 			}
 		});			
 	}
@@ -393,7 +384,6 @@ public class MazeWindow extends BasicWindow implements View {
 
 	@Override
 	public void displayCrossSection(int[][] maze2d) {
-	
 	}
 
 	@Override
@@ -422,18 +412,10 @@ public class MazeWindow extends BasicWindow implements View {
 
 	@Override
 	public void displayMaze(Maze3d maze) {
-		this.maze=maze;
-		Position startPos = maze.getStartPosition();
-		Position goalPos = maze.getGoalPosition();
-
-		int[][] mazeData = maze.getCrossSectionByX(startPos.getX());
-
-		//System.out.println(maze.toString());
 		
-		mazeDisplay.setCharacterPosition(startPos);
-		mazeDisplay.setGoalPosition(goalPos);
-		mazeDisplay.setMazeData(mazeData);
+		mazeDisplay.setMaze(maze);
 		mazeDisplay.redraw();
+		
 	}
 
 }

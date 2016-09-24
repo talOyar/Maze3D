@@ -3,9 +3,13 @@ package view;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Shell;
 
@@ -19,41 +23,48 @@ public class MazeDisplay extends Canvas {
 	int [][] mazeData;
 	Position startPosition ;
 	Position goalPosition ;
-	Position curentPosition ;
-	Position characterPosition;
+	Position currentPosition ;
+	Position characterPos;
+	int levels,rows,cols;
+	Image wall;
+	Image path;
+	
+	//**********************************setters and getters********************************
+
+	public void setMaze(Maze3d maze) {
+		this.maze = maze;
+		startPosition=maze.getStartPosition();
+		goalPosition=maze.getGoalPosition();
+		characterPos=maze.getStartPosition();
+		mazeData=maze.getCrossSectionByX(startPosition.x);
+		currentPosition=maze.getStartPosition();
+		character.setPos(startPosition);
+
+	}
 
 	
+//*****************************Contractor*********************************
 	
-//	int[][] mazeData={
-//			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-//			{1,0,0,0,0,0,0,0,1,1,0,1,0,0,1},
-//			{0,0,1,1,1,1,1,0,0,1,0,1,0,1,1},
-//			{1,1,1,0,0,0,1,0,1,1,0,1,0,0,1},
-//			{1,0,1,0,1,1,1,0,0,0,0,1,1,0,1},
-//			{1,1,0,0,0,1,0,0,1,1,1,1,0,0,1},
-//			{1,0,0,1,0,0,1,0,0,0,0,1,0,1,1},
-//			{1,0,1,1,0,1,1,0,1,1,0,0,0,1,1},
-//			{1,0,0,0,0,0,0,0,0,1,0,1,0,0,1},
-//			{1,1,1,1,1,1,1,1,1,1,1,1,0,1,1},
-//		};
-	//mazeDisplay.setMazeData(mazeData);	
 
-	
 	public MazeDisplay(Shell parent, int style) {
+		
 		// canvas const
 		super(parent, style);
 		
 		// Initialize character
 		character=new Character();
-		character.setPos(curentPosition);
-		
-		mazeData=maze.getCrossSectionByX(curentPosition.x);
-		
+
+		// Initialize images
+		wall= new Image(null, "images/wall.jpg" );
+		path= new Image(null, "images/path.jpg" );
+
 		//set window background
 		setBackground(new Color(null,255,255,255));
+
 		
-		// add a paint handler
+		// add a paint handler- drawing the maze and the character
 		this.addPaintListener(new PaintListener() {
+			
 			
 			
 			@Override
@@ -75,57 +86,85 @@ public class MazeDisplay extends Canvas {
 				          int x=j*w;
 				          int y=i*h;
 				          if(mazeData[i][j]!=0)
-				              e.gc.fillRectangle(x,y,w,h);
-				          else{
-				          }
+								e.gc.drawImage(wall, 0, 0, wall.getBounds().width, wall.getBounds().height, x, y, w, h);				    
+				          else
+								e.gc.drawImage(path, 0, 0, path.getBounds().width, path.getBounds().height,x, y, w, h);
 				      }
-				  character.draw(w, h, e.gc);
 				   
+				  character.draw(w, h, e.gc);
+				  
 			}
-		});
+		}); 
 		
 		
-		
-		TimerTask task = new TimerTask() {
+		this.addKeyListener(new KeyListener() {
 			
 			@Override
-			public void run() {	
-				getDisplay().syncExec(new Runnable() {					
-
-					@Override
-					public void run() {
-						
-						character.moveRight();
-						redraw();
-					}
-				});
+			public void keyReleased(KeyEvent arg0) {
+				// TODO Auto-generated method stub
 				
 			}
-		};
-		Timer timer = new Timer();
-		timer.scheduleAtFixedRate(task, 0, 500);
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				
+				Position pos = character.getPos();
+				
+				switch (e.keyCode) {
+				
+				case SWT.ARROW_RIGHT:					
+					character.setPos(new Position(pos.x , pos.y+1,pos.z));
+					character.moveRight();
+					redraw();
+					break;
+				
+				case SWT.ARROW_LEFT:					
+					character.setPos(new Position(pos.x , pos.y-1,pos.z));
+					character.moveLeft();
+					redraw();
+					break;
+					
+				case SWT.ARROW_UP:					
+					character.setPos(new Position(pos.x , pos.y,pos.z+1));
+					character.moveForward();
+					redraw();
+					break;
+					
+				case SWT.ARROW_DOWN:					
+					character.setPos(new Position(pos.x , pos.y,pos.z-1));
+					character.moveBackward();
+					redraw();
+					break;
+					
+				case SWT.PAGE_DOWN:					
+					character.setPos(new Position(pos.x-1 ,pos.y,pos.z));
+					character.moveDown();
+					redraw();
+					break;
+					
+				case SWT.PAGE_UP:					
+					character.setPos(new Position(pos.x+1,pos.y,pos.z));
+					character.moveUp();
+					redraw();
+					break;
+			}
+				
+			}
+		});
 	}
+	
+	private void redrawMe() {
+		getDisplay().syncExec(new Runnable() {
 
-	
-	
-	
-	
-	
-	
-	//**********************************setters and getters********************************
-	
-	
-	public void setMazeData(int[][] mazeData) {
-		this.mazeData = mazeData;
-		this.redraw();
+			@Override
+			public void run() {
+				setEnabled(true);
+				redraw();
+			}
+			
+		});
 	}
-	
-	public void setGoalPosition(Position goalPos) {
-		goalPosition=goalPos;
-	}
-
-	public void setCharacterPosition(Position startPos) {
-		characterPosition=startPos;
-	}
-	
 }
+
+
+

@@ -64,13 +64,13 @@ public class CommandsManager {
 		commands.put("directory", new getPathCommand());
 		commands.put("display_message",new DisplayMessage());
 		commands.put("maze_ready", new DisplayMazeIsReady());
-		commands.put("goRight", new goRightCommand());
-		commands.put("goLeft", new goLeftCommand());
-		commands.put("goForward", new goForwardCommand());
-		commands.put("goBackward", new goBackwardCommand());
-		commands.put("goUp", new goUpCommand());
-		commands.put("goDown", new goDownCommand());
-		commands.put("load_xml", new LoadXMLCommand());
+		//commands.put("goRight", new goRightCommand());
+		//commands.put("goLeft", new goLeftCommand());
+		//commands.put("goForward", new goForwardCommand());
+		//commands.put("goBackward", new goBackwardCommand());
+		//commands.put("goUp", new goUpCommand());
+		//commands.put("goDown", new goDownCommand());
+		//commands.put("load_xml", new LoadXMLCommand());
 		commands.put("exit", new exitCommand());
 
 		return commands;
