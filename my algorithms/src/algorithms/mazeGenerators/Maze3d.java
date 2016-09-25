@@ -190,7 +190,7 @@ public Directions checkLeft(Position p){
 }
 public Directions checkForward(Position p){
 	
-	if((p.y+2)<rows && getCellVal(p.x, p.y-1, p.z)==WALL && getCellVal(p.x, p.y-2, p.z)==WALL )
+	if((p.y-2)>0 && getCellVal(p.x, p.y-1, p.z)==WALL && getCellVal(p.x, p.y-2, p.z)==WALL )
 		return Directions.FORWARD;
 	else
 	return null;
@@ -198,7 +198,7 @@ public Directions checkForward(Position p){
 }	
 public Directions checkBackward(Position p){
 	
-	if((p.y-2)>0 && getCellVal(p.x, p.y+1, p.z)==WALL && getCellVal(p.x, p.y+2, p.z)==WALL)
+	if((p.y+2)<rows && getCellVal(p.x, p.y+1, p.z)==WALL && getCellVal(p.x, p.y+2, p.z)==WALL)
 		return Directions.BACKWARD;
 	else
 	return null;

@@ -13,6 +13,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Shell;
 
+import algorithms.mazeGenerators.Directions;
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
 
@@ -113,40 +114,50 @@ public class MazeDisplay extends Canvas {
 				
 				switch (e.keyCode) {
 				
-				case SWT.ARROW_RIGHT:			
+				case SWT.ARROW_RIGHT:
+				
 					character.moveRight();
 					redraw();
-
+					
 					break;
 				
-				case SWT.ARROW_LEFT:		
+				case SWT.ARROW_LEFT:	
+					
 					character.moveLeft();
 					redraw();
 
 					break;
 					
-				case SWT.ARROW_UP:					
+				case SWT.ARROW_UP:
+					
 					character.moveForward();
 					redraw();
+					
 					break;
 					
-				case SWT.ARROW_DOWN:					
+				case SWT.ARROW_DOWN:
+					
 					character.moveBackward();
 					redraw();
+					
 					break;
 					
-				case SWT.PAGE_DOWN:					
+				case SWT.PAGE_DOWN:	
+					
 					character.moveDown();
 					currentLevel--;
 					mazeData=maze.getCrossSectionByX(currentLevel);
 					redraw();
+					
 					break;
 					
-				case SWT.PAGE_UP:					
+				case SWT.PAGE_UP:
+					
 					character.moveUp();
 					currentLevel++;
 					mazeData=maze.getCrossSectionByX(currentLevel);
 					redraw();
+					
 					break;
 			}
 				

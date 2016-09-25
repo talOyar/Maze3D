@@ -29,6 +29,7 @@ import algorithms.search.Solution;
  */
 
 public class Demo {
+	
 
 	public static void Run(){
 			
