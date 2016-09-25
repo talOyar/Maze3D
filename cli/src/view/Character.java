@@ -11,7 +11,6 @@ public class Character {
 	private Image img;
 	
 	
-	
 	//*************Contractor***************//
 	
 	public Character() {
@@ -24,32 +23,39 @@ public class Character {
 	public void draw(int cellWidth, int cellHeight, GC gc) {
 		
 		gc.drawImage(img, 0, 0, img.getBounds().width, img.getBounds().height, 
-				cellWidth * pos.x, cellHeight * pos.y, cellWidth, cellHeight);
+				cellWidth * pos.z, cellHeight * pos.y, cellWidth, cellHeight);
 	}
 	
 
 	//****************methods for moving the character*******************//
 	
+	
 	public void moveUp(){
 		pos.x++;		
+
 	}
 
 	public void moveDown(){
-		pos.x--;	
+		pos.x--;
 		}
 	
 	public void moveLeft(){
-		pos.y++;	}
+		pos.z--;	
+
+		
+	}
 
 	public void moveRight(){
-		pos.y--;		
+		pos.z++;		
+
 	}
 	public void moveForward() {
-		pos.z++;
+		pos.y--;
+		
 	}
 	
 	public void moveBackward() {
-		pos.z--;
+		pos.y++;
 	}
 	
 	

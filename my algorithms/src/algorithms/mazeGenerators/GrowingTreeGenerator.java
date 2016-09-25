@@ -76,14 +76,14 @@ public class GrowingTreeGenerator extends Generator implements Maze3dGenerator {
 			list.add(posLeft);
 			break;
 		case FORWARD:
-			maze.setFree(position.x,position.y+1,position.z);
-			maze.setFree(position.x,position.y+2,position.z);
+			maze.setFree(position.x,position.y-1,position.z);
+			maze.setFree(position.x,position.y-2,position.z);
 			Position posForward= new Position(position.x,position.y+2,position.z);
 			list.add(posForward);
 			break;
 		case BACKWARD:		
-		maze.setFree(position.x,position.y-1,position.z);
-		maze.setFree(position.x,position.y-2,position.z);
+		maze.setFree(position.x,position.y+1,position.z);
+		maze.setFree(position.x,position.y+2,position.z);
 		Position posBackward= new Position(position.x,position.y-2,position.z);
 			list.add(posBackward);
 			break;

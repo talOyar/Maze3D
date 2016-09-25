@@ -33,9 +33,10 @@ public class MazeWindow extends BasicWindow implements View {
 	private MazeDisplay mazeDisplay;
     int Qstyle = SWT.APPLICATION_MODAL | SWT.YES | SWT.NO;
     Maze3d maze;
-    
+    String mazeName;
     Listener exitListener=new Listener() {    // exit handler
 		
+    	
     	
 		@Override
 		public void handleEvent(Event arg0) {
@@ -306,14 +307,11 @@ public class MazeWindow extends BasicWindow implements View {
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
+				mazeName=txtName.getText();
 				setChanged();
 				notifyObservers("generate_maze " +txtName.getText()+" "+txtLevels.getText()+" "+ txtRows.getText() + " " + txtCols.getText());
-				setChanged();
-				
-				notifyObservers("display_maze "+txtName.getText());
 				shell.close();
-				
-				
+
 			}
 			
 			
@@ -344,7 +342,8 @@ public class MazeWindow extends BasicWindow implements View {
 				MessageBox msg = new MessageBox(shell);
 				msg.setMessage("Maze " + name + " is ready");
 				msg.open();	
-				
+				setChanged();
+				notifyObservers("display_maze "+mazeName);
 				
 				
 			}

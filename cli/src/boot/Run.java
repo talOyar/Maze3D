@@ -21,7 +21,6 @@ public static void main(String[] args) {
 	//MyView view = new MyView(in, out);
 	MyModel model = new MyModel();
 	
-	
 	Presenter presenter = new Presenter(view, model);
 	model.addObserver(presenter);
 	view.addObserver(presenter);

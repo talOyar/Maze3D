@@ -25,7 +25,7 @@ public class MazeDisplay extends Canvas {
 	Position goalPosition ;
 	Position currentPosition ;
 	Position characterPos;
-	int levels,rows,cols;
+	int currentLevel;
 	Image wall;
 	Image path;
 	
@@ -36,7 +36,8 @@ public class MazeDisplay extends Canvas {
 		startPosition=maze.getStartPosition();
 		goalPosition=maze.getGoalPosition();
 		characterPos=maze.getStartPosition();
-		mazeData=maze.getCrossSectionByX(startPosition.x);
+		currentLevel=startPosition.x;
+		mazeData=maze.getCrossSectionByX(currentLevel);
 		currentPosition=maze.getStartPosition();
 		character.setPos(startPosition);
 
@@ -112,39 +113,39 @@ public class MazeDisplay extends Canvas {
 				
 				switch (e.keyCode) {
 				
-				case SWT.ARROW_RIGHT:					
-					character.setPos(new Position(pos.x , pos.y+1,pos.z));
+				case SWT.ARROW_RIGHT:			
 					character.moveRight();
 					redraw();
+
 					break;
 				
-				case SWT.ARROW_LEFT:					
-					character.setPos(new Position(pos.x , pos.y-1,pos.z));
+				case SWT.ARROW_LEFT:		
 					character.moveLeft();
 					redraw();
+
 					break;
 					
 				case SWT.ARROW_UP:					
-					character.setPos(new Position(pos.x , pos.y,pos.z+1));
 					character.moveForward();
 					redraw();
 					break;
 					
 				case SWT.ARROW_DOWN:					
-					character.setPos(new Position(pos.x , pos.y,pos.z-1));
 					character.moveBackward();
 					redraw();
 					break;
 					
 				case SWT.PAGE_DOWN:					
-					character.setPos(new Position(pos.x-1 ,pos.y,pos.z));
 					character.moveDown();
+					currentLevel--;
+					mazeData=maze.getCrossSectionByX(currentLevel);
 					redraw();
 					break;
 					
 				case SWT.PAGE_UP:					
-					character.setPos(new Position(pos.x+1,pos.y,pos.z));
 					character.moveUp();
+					currentLevel++;
+					mazeData=maze.getCrossSectionByX(currentLevel);
 					redraw();
 					break;
 			}
@@ -152,6 +153,9 @@ public class MazeDisplay extends Canvas {
 			}
 		});
 	}
+	
+	
+	
 	
 	private void redrawMe() {
 		getDisplay().syncExec(new Runnable() {

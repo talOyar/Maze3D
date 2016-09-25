@@ -46,6 +46,7 @@ public Maze3d(byte[] mazeAsBytes) {
 		}		
 }
 
+
 public Maze3d(int level, int row, int col) {
 	this.rows=row*2+1;
 	this.cols=col*2+1;
@@ -68,6 +69,7 @@ public int getLevels() {
 public int[][][] getMaze() {
 	return maze;
 }
+
 public Position setRandomGoal(){
 	Position p= choosRandomPosition();
 	while(getCellVal(p.x, p.y, p.z)==WALL || p==startPosition){
@@ -188,7 +190,7 @@ public Directions checkLeft(Position p){
 }
 public Directions checkForward(Position p){
 	
-	if((p.y+2)<rows && getCellVal(p.x, p.y+1, p.z)==WALL && getCellVal(p.x, p.y+2, p.z)==WALL )
+	if((p.y+2)<rows && getCellVal(p.x, p.y-1, p.z)==WALL && getCellVal(p.x, p.y-2, p.z)==WALL )
 		return Directions.FORWARD;
 	else
 	return null;
@@ -196,7 +198,7 @@ public Directions checkForward(Position p){
 }	
 public Directions checkBackward(Position p){
 	
-	if((p.y-2)>0 && getCellVal(p.x, p.y-1, p.z)==WALL && getCellVal(p.x, p.y-2, p.z)==WALL)
+	if((p.y-2)>0 && getCellVal(p.x, p.y+1, p.z)==WALL && getCellVal(p.x, p.y+2, p.z)==WALL)
 		return Directions.BACKWARD;
 	else
 	return null;
@@ -223,7 +225,7 @@ public int[][] getCrossSectionByX(int x) throws IndexOutOfBoundsException{
 	int[][] getCrossByX;
 	if(x<0 || x> levels-1)
 		throw new IndexOutOfBoundsException("The input of x is not valid!");
-		getCrossByX = new int[rows][levels];
+		getCrossByX = new int[rows][cols];
 		for(int i=0;i<rows;i++)
 			for(int j=0;j<cols;j++){
 				getCrossByX[i][j]=maze[x][i][j];
@@ -231,6 +233,7 @@ public int[][] getCrossSectionByX(int x) throws IndexOutOfBoundsException{
 	
 	return getCrossByX ;
 }
+
 public int[][] getCrossSectionByY(int y) throws IndexOutOfBoundsException{
 	
 	int[][] getCrossByY=new int[levels][cols];
@@ -247,6 +250,7 @@ public int[][] getCrossSectionByY(int y) throws IndexOutOfBoundsException{
 	
 
 }
+
 public int[][] getCrossSectionByZ(int z) throws IndexOutOfBoundsException{	
 	int[][] getCrossByZ=new int[levels][rows];
 	if(z<0 || z> cols-1)
@@ -266,9 +270,9 @@ public ArrayList<Position> getDirectionsReturnPositions(ArrayList<Directions> di
 		if (direction==Directions.LEFT) 
 			positions.add(new Position(pos.x,pos.y,pos.z-2));
 		if (direction==Directions.FORWARD) 
-			positions.add(new Position(pos.x,pos.y+2,pos.z));
-		if (direction==Directions.BACKWARD) 
 			positions.add(new Position(pos.x,pos.y-2,pos.z));
+		if (direction==Directions.BACKWARD) 
+			positions.add(new Position(pos.x,pos.y+2,pos.z));
 		if (direction==Directions.UP) 
 			positions.add(new Position(pos.x+2,pos.y,pos.z));
 		if (direction==Directions.DOWN) 
@@ -288,11 +292,11 @@ public ArrayList<Directions> getPossibleMoves(Position p){
 	if((p.z-2)>=0) 
 		if(getCellVal(p.x, p.y, p.z-1)==PATH && getCellVal(p.x, p.y, p.z-2)==PATH)
 		dir.add(Directions.LEFT);
-	if((p.y+2)<=rows)
-		if(getCellVal(p.x, p.y+1, p.z)==PATH && getCellVal(p.x, p.y+2, p.z)==PATH)
-		dir.add(Directions.FORWARD);
-	if((p.y-2)>=0)
+	if((p.y-2)<=rows)
 		if(getCellVal(p.x, p.y-1, p.z)==PATH && getCellVal(p.x, p.y-2, p.z)==PATH)
+		dir.add(Directions.FORWARD);
+	if((p.y+2)>=0)
+		if(getCellVal(p.x, p.y+1, p.z)==PATH && getCellVal(p.x, p.y+2, p.z)==PATH)
 		dir.add(Directions.BACKWARD);
 	if((p.x+2)<=levels)
 		if(getCellVal(p.x+1, p.y, p.z)==PATH && getCellVal(p.x+2, p.y, p.z)==PATH)
@@ -308,6 +312,7 @@ public ArrayList<Directions> getPossibleMoves(Position p){
 
 @Override
 public String toString() {
+	
 	StringBuilder sb = new StringBuilder();
 	for (int x = 0 ; x < levels; x++)
 	{
