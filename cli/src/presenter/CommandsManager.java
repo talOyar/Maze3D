@@ -1,8 +1,10 @@
 
 package presenter;
 
+import java.beans.XMLEncoder;
 import java.io.File;
-
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 
 
@@ -64,18 +66,51 @@ public class CommandsManager {
 		commands.put("directory", new getPathCommand());
 		commands.put("display_message",new DisplayMessage());
 		commands.put("maze_ready", new DisplayMazeIsReady());
-		//commands.put("goRight", new goRightCommand());
-		//commands.put("goLeft", new goLeftCommand());
-		//commands.put("goForward", new goForwardCommand());
-		//commands.put("goBackward", new goBackwardCommand());
-		//commands.put("goUp", new goUpCommand());
-		//commands.put("goDown", new goDownCommand());
-		//commands.put("load_xml", new LoadXMLCommand());
+		commands.put("solution_ready",new DisplaySolutionIsReady());
+		commands.put("set_properties",new setPropertiesCommand() );
+		commands.put("load_xml", new LoadXMLCommand());
 		commands.put("exit", new exitCommand());
-
+		commands.put("get_maze_list", new getMazeListCommand());
 		return commands;
 	}
 	
+
+public class getMazeListCommand implements Command{
+
+	@Override
+	public void doCommand(String[] args) {
+		String[] list=model.getMazeList();
+		view.setMazeList(list);
+	}
+	
+}
+	
+public class setPropertiesCommand implements Command{
+
+	@Override
+	public void doCommand(String[] args) {
+		
+		Properties prop = new Properties();
+		prop.setNumOfThreads(20);
+		prop.setGenerateMazeAlgorithm(args[0]);
+		prop.setSolveMazeAlgorithm(args[1]);
+		
+		
+		XMLEncoder xmlEncoder = null;
+		try {
+			xmlEncoder = new XMLEncoder(new FileOutputStream("properties.xml"));
+			xmlEncoder.writeObject(prop);
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			xmlEncoder.close();
+		}
+
+model.loadXML("properties.xml");	}
+	
+}
 
 
 public void executCommand(String commandLine){
@@ -339,9 +374,24 @@ public class DisplayMazeIsReady implements Command {
 		@Override
 		public void doCommand(String[] args) {
 			try {
+				
+				int flag=1;
 				String name=args[0];
 				String algorithm=args[1];
-				model.solveMaze3d(name,algorithm);	
+				int x=Integer.parseInt(args[2]);
+				int y=Integer.parseInt(args[3]);
+				int z=Integer.parseInt(args[4]);
+				
+				Position position=new Position(x, y, z);
+				Maze3d maze=model.getMaze(name);
+				
+				if(maze.getStartPosition()!=position)
+				{
+					maze.setStartPosition(position);
+					flag=-1;
+				}
+				
+				model.solveMaze3d(name,algorithm,flag);	
 			} catch (Exception e) {
 				view.displayMessage("Wrong input,please try again!");
 			}
@@ -410,61 +460,6 @@ public class DisplayMazeIsReady implements Command {
 		}
 		
 	}
-
-	
-	public class goRightCommand implements Command{
-
-		@Override
-		public void doCommand(String[] args) {
-			model.goRight();			
-		
-	}
-	}
-	public class goLeftCommand implements Command{
-
-		@Override
-		public void doCommand(String[] args) {
-			model.goLeft();			
-			
-		}
-		
-	}
-	public class goForwardCommand implements Command{
-
-		@Override
-		public void doCommand(String[] args) {
-			model.goForward();			
-			
-		}
-		
-	}
-	public class goBackwardCommand implements Command{
-
-		@Override
-		public void doCommand(String[] args) {
-			model.goBackward();			
-			
-		}
-		
-	}
-	public class goUpCommand implements Command{
-
-		@Override
-		public void doCommand(String[] args) {
-			model.goUp();			
-			
-		}
-		
-	}
-	public class goDownCommand implements Command{
-
-		@Override
-		public void doCommand(String[] args) {
-			model.goDown();			
-			
-		}
 		
 	}
 	
-	}
-

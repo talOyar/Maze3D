@@ -49,10 +49,7 @@ public class MyView extends Observable implements View, Observer {
 		cli.addObserver(this);
 	}
 	
-	
-	public void setPresenter(Presenter presenter) {
-		this.presenter = presenter;
-	}
+
 /**
  * <p>notifyMazeIsReady method
  * <p> display a message to the user when the maze is generated.
@@ -171,6 +168,14 @@ public void update(Observable o, Object arg) {
 		setChanged();
 		notifyObservers(arg);		
 	}	
+}
+
+
+
+@Override
+public void setMazeList(String[] list) {
+	// TODO Auto-generated method stub
+	
 }
 
 

@@ -31,7 +31,7 @@ public interface View {
 	void displayFolders(File[] path);
 	void notifySolutionIsReady(String name);
 	void displayMazeSolution(Solution<Position> solution);
-	void setPresenter(Presenter presenter);
 	void start();
 	void displayMessage(String name);
+	void setMazeList(String[] list);
 }

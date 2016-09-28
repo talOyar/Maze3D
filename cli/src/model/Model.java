@@ -20,16 +20,9 @@ public interface Model {
 	File[] getDirectory(String path);
 	void saveCompressMaze(String name, String file);
 	void loadMaze(String name, String file);
-	void solveMaze3d(String name, String algorithm);
+	void solveMaze3d(String name, String algorithm,int flag);
 	Solution<Position> getMazeSolution(String name);
-	void setPresenter(Presenter presenter);
 	void exit();
 	void loadXML(String string);
-	void goRight();
-	void goLeft();
-	void goForward();
-	void goBackward();
-	void goUp();
-	void goDown();
-	
+	String[] getMazeList();	
 }

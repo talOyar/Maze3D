@@ -74,7 +74,6 @@ public Position setRandomGoal(){
 	Position p= choosRandomPosition();
 	while(getCellVal(p.x, p.y, p.z)==WALL || p==startPosition){
 		p=choosRandomPosition();
-		
 	}
 	
 	setFree(p.x, p.y, p.z);
@@ -266,17 +265,17 @@ public ArrayList<Position> getDirectionsReturnPositions(ArrayList<Directions> di
 	ArrayList<Position> positions=new ArrayList<Position>();
 	for(Directions direction: dir){
 		if (direction==Directions.RIGHT) 
-			positions.add(new Position(pos.x,pos.y,pos.z+2));
+			positions.add(new Position(pos.x,pos.y,pos.z+1));
 		if (direction==Directions.LEFT) 
-			positions.add(new Position(pos.x,pos.y,pos.z-2));
+			positions.add(new Position(pos.x,pos.y,pos.z-1));
 		if (direction==Directions.FORWARD) 
-			positions.add(new Position(pos.x,pos.y-2,pos.z));
+			positions.add(new Position(pos.x,pos.y-1,pos.z));
 		if (direction==Directions.BACKWARD) 
-			positions.add(new Position(pos.x,pos.y+2,pos.z));
+			positions.add(new Position(pos.x,pos.y+1,pos.z));
 		if (direction==Directions.UP) 
-			positions.add(new Position(pos.x+2,pos.y,pos.z));
+			positions.add(new Position(pos.x+1,pos.y,pos.z));
 		if (direction==Directions.DOWN) 
-			positions.add(new Position(pos.x-2,pos.y,pos.z));
+			positions.add(new Position(pos.x-1,pos.y,pos.z));
 	}
 	
 	return positions;
@@ -287,22 +286,22 @@ public ArrayList<Directions> getPossibleMoves(Position p){
 	ArrayList<Directions> dir=new ArrayList<Directions>();
 	
 	if((p.z+2)<=cols) 
-		if(getCellVal(p.x, p.y, p.z+1)==PATH && getCellVal(p.x, p.y, p.z+2)==PATH)
+		if(getCellVal(p.x, p.y, p.z+1)==PATH)
 		dir.add(Directions.RIGHT);
 	if((p.z-2)>=0) 
-		if(getCellVal(p.x, p.y, p.z-1)==PATH && getCellVal(p.x, p.y, p.z-2)==PATH)
+		if(getCellVal(p.x, p.y, p.z-1)==PATH)
 		dir.add(Directions.LEFT);
 	if((p.y-2)<=rows)
-		if(getCellVal(p.x, p.y-1, p.z)==PATH && getCellVal(p.x, p.y-2, p.z)==PATH)
+		if(getCellVal(p.x, p.y-1, p.z)==PATH)
 		dir.add(Directions.FORWARD);
 	if((p.y+2)>=0)
-		if(getCellVal(p.x, p.y+1, p.z)==PATH && getCellVal(p.x, p.y+2, p.z)==PATH)
+		if(getCellVal(p.x, p.y+1, p.z)==PATH)
 		dir.add(Directions.BACKWARD);
 	if((p.x+2)<=levels)
-		if(getCellVal(p.x+1, p.y, p.z)==PATH && getCellVal(p.x+2, p.y, p.z)==PATH)
+		if(getCellVal(p.x+1, p.y, p.z)==PATH)
 		dir.add(Directions.UP);
 	if((p.x-2)>=0) 
-		if(getCellVal(p.x-1, p.y, p.z)==PATH && getCellVal(p.x-2, p.y, p.z)==PATH)
+		if(getCellVal(p.x-1, p.y, p.z)==PATH)
 		dir.add(Directions.DOWN);
 	
 

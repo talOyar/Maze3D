@@ -23,9 +23,11 @@ import java.util.zip.GZIPOutputStream;
 
 import algorithms.demo.SearchableMaze3d;
 import algorithms.mazeGenerators.ChoseLastCell;
+import algorithms.mazeGenerators.ChoseRandomCell;
 import algorithms.mazeGenerators.GrowingTreeGenerator;
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
+import algorithms.mazeGenerators.SimpleMaze3dGenerator;
 import algorithms.search.Bfs;
 import algorithms.search.CommonSearcher;
 import algorithms.search.Dfs;
@@ -54,34 +56,63 @@ import presenter.PropertiesLoader;
  */
 
 public class MyModel extends Observable implements Model {
-	private Maze3d currentMaze;
 	private Map<String, Maze3d> mazes = new ConcurrentHashMap<String, Maze3d>();
 	private Map<String, Solution<Position>> solutions = new ConcurrentHashMap<String,Solution<Position>>();
 	private ExecutorService threadPool;
-	private Presenter presenter;
 	private Properties properties;	
+	private String generateAlgorithm;
+	private String solveAlgorithm;
+	private int numOfThreads;
+	private CommonSearcher<Position> deafultSearcher;
+
+
 	
-	
-	
-	
+
 	
 	@Override
 	public void loadXML(String xml) {
+		
 		try {
+			
 			XMLDecoder decoder= new XMLDecoder(new FileInputStream(xml));
 			properties=(Properties)decoder.readObject();
 			decoder.close();
+			setChanged();
+			notifyObservers("display_message Properties load succesfully!");
 			
-		} catch (FileNotFoundException e) {
+			
+		}
+		catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}		
+		}
+
+		
+		//set properties
+				if(properties != null){
+					
+				numOfThreads = properties.getNumOfThreads();
+				generateAlgorithm = properties.getGenerateMazeAlgorithm();
+				solveAlgorithm = properties.getSolveMazeAlgorithm();
+
+
+			}
 	}
 	
+	
+	
+	
 	public MyModel() {
-		
+					
 		properties=PropertiesLoader.getInstance().getProperties();
+		
+		System.out.println(properties.getNumOfThreads());
 		threadPool = Executors.newFixedThreadPool(properties.getNumOfThreads());
+		generateAlgorithm=properties.getGenerateMazeAlgorithm();
+		solveAlgorithm=properties.getSolveMazeAlgorithm();
+		System.out.println(generateAlgorithm);
+		System.out.println(solveAlgorithm);
+		
 		loadSolutions();
 		
 	}
@@ -101,9 +132,35 @@ public class MyModel extends Observable implements Model {
 			
 			@Override
 			public Maze3d call() throws Exception {
-				GrowingTreeGenerator Generator =new GrowingTreeGenerator(new ChoseLastCell());
-				Maze3d maze = Generator.generate(levels, rows, cols);
+				
+				Maze3d maze=null ;
+				GrowingTreeGenerator generator=null;
+				SimpleMaze3dGenerator simpleGenerator=null;
+				
+				System.out.println(generateAlgorithm);
+				if(generateAlgorithm.equals("growingTreeByLast"))
+				{
+				 generator =new GrowingTreeGenerator(new ChoseLastCell());
+				  maze = generator.generate(levels, rows, cols);
+
+				}
+				else if(generateAlgorithm.equals("growingTreeByRandom"))
+				{
+				 generator =new GrowingTreeGenerator(new ChoseRandomCell());
+				  maze = generator.generate(levels, rows, cols);
+				}	
+				
+				else if(generateAlgorithm=="simple")
+				{
+				 simpleGenerator =new SimpleMaze3dGenerator();
+				 maze = simpleGenerator.generate(levels, rows, cols);
+
+				}
+
 				mazes.put(namemaze, maze);
+				
+				if(solutions.containsKey(namemaze))
+					solutions.remove(namemaze);
 				
 				setChanged();
 				notifyObservers("maze_ready "+namemaze);
@@ -114,20 +171,21 @@ public class MyModel extends Observable implements Model {
 
 	}
 	
+	
+	
+	
+	
 /**
  * <p>setController method
  * <p>sets the controller of the model
  */
-	@Override
-	public void setPresenter(Presenter presenter) {
-		this.presenter=presenter;
-	}
-	
+
 /**
  * <p>getMaze method
  * <p> receives a string of the maze name and return the maze
  * @return maze3d
  */
+	
 	//get a name & return maze 
 	@Override
 	public Maze3d getMaze(String name) {
@@ -135,7 +193,6 @@ public class MyModel extends Observable implements Model {
 		if(!mazes.containsKey(name)){
 			setChanged();
 			notifyObservers("display_message "+"maze does not exist!");
-			//presenter.displayMessage("Maze does not exist!");
 		}
 		else
 	
@@ -150,15 +207,16 @@ public class MyModel extends Observable implements Model {
 		
 		try {
 			save=new ObjectOutputStream(new GZIPOutputStream(new FileOutputStream("solutions.dat")));
+			if(mazes!=null && solutions!=null){
 			save.writeObject(mazes);
 			save.writeObject(solutions);			
-			
+			}
 		} catch (FileNotFoundException e) {
 				setChanged();
-				notifyObservers("display_message Error while trying to save the solution into the file!");
+				notifyObservers("display_message Error while trying to save the solutions into the file!");
 		} catch (IOException e) {
 			setChanged();
-			notifyObservers("display_message Error while trying to save the solution into the file!");
+			notifyObservers("display_message Error while trying to save the solutions into the file!");
 		}finally {
 			try {
 				save.close();
@@ -173,6 +231,7 @@ public class MyModel extends Observable implements Model {
 	
 	
 @SuppressWarnings("unchecked")
+
 public void loadSolutions(){
 	File file = new File("solutions.dat");
 	if (!file.exists()){
@@ -241,6 +300,12 @@ public void loadSolutions(){
 		
 		return null;
 	}
+	
+	
+	
+	
+	
+	
 /**
  * <p>getDirectory method
  * <p> receives a directory path and returns a file array that contains all the folders and files in
@@ -253,6 +318,11 @@ public void loadSolutions(){
 
 		return listOfFiles;
 	}
+	
+	
+	
+	
+	
 	/**
 	 * <p> saveCompressMaze method
 	 * <p> receives the name of the maze to be saved and the name of the file to save into
@@ -300,6 +370,11 @@ public void loadSolutions(){
 	 * and loads the decompressed maze.
 	 * 
 	 */
+	
+	
+	
+	
+	
 	@Override
 	public void loadMaze(String name, String fileName) {
 		
@@ -321,18 +396,17 @@ public void loadSolutions(){
 			Maze3d maze = new Maze3d(arr);
 			
 			//if maze is not null add it to mazes then print a message to the user.
+			
 			if (maze!=null){
 				mazes.put(name, maze);
 				setChanged();
 				notifyObservers("display_message "+"The maze '"+name+"' loaded Successfully from the file "+fileName+"!");
-				//presenter.displayMessage("The maze '"+name+"' loaded Successfully from the file "+fileName+"!");
 			}
 		}
 		
 		catch(Exception e){
 			setChanged();
 			notifyObservers("display_message Error while trying to load the maze from the file "+fileName+"!");
-			//presenter.displayMessage("Error while trying to load maze from the file "+fileName+"!");
 			
 			}
 		}
@@ -343,36 +417,46 @@ public void loadSolutions(){
  * to solve it with. then solve the maze in a thread and adds the solution to an hashMap of solutions
  */
 	@Override
-	public void solveMaze3d(String name, String algorithm) {
+	public void solveMaze3d(String name, String algorithm,int flag) {
+		
+			
+		if(flag==1)
+		{
+			
 		if(solutions.containsKey(name)){
 			setChanged();
-			notifyObservers("solution_ready"+name);
-		}
+			notifyObservers("solution_ready "+name);
+			return;
 			
+		}
+		}
 		threadPool.submit(new Callable<Solution<Position>>(){ 
 			
 			@Override
 			public Solution<Position> call() throws Exception {
+				
 				if(!mazes.containsKey(name)){
 					setChanged();
 					notifyObservers("display_message Maze does not exist!");
-					//presenter.displayMessage("Maze does not exist!");
 					return null;
 				}
 				
+				
 				else{
+					
 				Maze3d maze=mazes.get(name);
 				
 				SearchableMaze3d searchableMaze= new SearchableMaze3d(maze);
 
+						
 				if(algorithm.equalsIgnoreCase("bfs")){
 					CommonSearcher<Position> searcher = new Bfs<Position>();
 					Solution<Position> solution=searcher.search(searchableMaze);
 					solutions.put(name, solution);
 					setChanged();
 					notifyObservers("solution_ready "+name);	
-					
 				}
+				
 				else if(algorithm.equalsIgnoreCase("dfs")){
 					CommonSearcher<Position> searcher = new Dfs<Position>();
 					Solution<Position> solution=searcher.search(searchableMaze);
@@ -382,17 +466,38 @@ public void loadSolutions(){
 					notifyObservers("solution_ready "+name);	
 					
 				}
+				
+				else if(algorithm.equals("byGui")){
+					
+					if(solveAlgorithm.equals("bfs"))
+						deafultSearcher=new Bfs<Position>();
+					
+					else if(solveAlgorithm.equals("dfs"))
+						deafultSearcher=new Dfs<Position>();
+					
+					
+					Solution<Position> solution=deafultSearcher.search(searchableMaze);
+					solutions.put(name, solution);
+					
+					setChanged();
+					notifyObservers("solution_ready "+name);	
+					
+				}
+				
 				else{
 					setChanged();
-					notifyObservers("display_message "+"Wrong algorithm choice!");
+					notifyObservers("display_message Wrong algorithm choice!");
 						}
 				}
 				return null;
 			}
+		
 		});
+			}
 		
 		
-	}
+	
+	
 	/**
 	 * <p>getMazeSolution method
 	 * <p>returns the solution of the maze.
@@ -403,7 +508,6 @@ public void loadSolutions(){
 		if(!solutions.containsKey(name)){
 			setChanged();
 			notifyObservers("display_message No solution for this maze yet!");	
-			//presenter.displayMessage("No solution for this maze yet!");
 			return null;
 				}
 		
@@ -413,6 +517,9 @@ public void loadSolutions(){
 			return solution;	}
 		
 	}
+	
+	
+	
 	/**
 	 * <p> exit method
 	 *<p> terminate the program.
@@ -432,7 +539,6 @@ public void loadSolutions(){
 			catch (InterruptedException e) {
 				setChanged();
 				notifyObservers("display_message The program did not terminated properly");
-				//presenter.displayMessage("The program did not terminated properly!");
 				e.printStackTrace();
 			}
 		}
@@ -440,48 +546,22 @@ public void loadSolutions(){
 		if(terminated){
 			setChanged();
 			notifyObservers("display_message Program terminated!");
-			//presenter.displayMessage("Program terminated!");}
 	}
 
 	}
+
+
 
 	@Override
-	public void goRight() {
-		// TODO Auto-generated method stub
+	public String[] getMazeList() {
+		int i=0;
+		String[] list= new String[mazes.size()];
+		for(String name: mazes.keySet())
+		list[i++]=name;
 		
+		return list;
 	}
-
-	@Override
-	public void goLeft() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void goForward() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void goBackward() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void goUp() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void goDown() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
+	
 }
 	
 

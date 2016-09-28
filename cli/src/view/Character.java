@@ -2,7 +2,6 @@ package view;
 
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
-
 import algorithms.mazeGenerators.Position;
 
 public class Character {
@@ -14,7 +13,7 @@ public class Character {
 	//*************Contractor***************//
 	
 	public Character() {
-		img = new Image(null, "images/leonardo.jpg");
+		img = new Image(null, "images/leonardo2.png");
 	}
 
 	
@@ -31,12 +30,12 @@ public class Character {
 	
 	
 	public void moveUp(){
-		pos.x++;		
+		pos.x+=2;		
 
 	}
 
 	public void moveDown(){
-		pos.x--;
+		pos.x-=2;
 		}
 	
 	public void moveLeft(){
@@ -68,5 +67,11 @@ public class Character {
 
 	public void setPos(Position pos) {
 		this.pos = pos;
+	}
+
+
+	public void setImage(String string) {
+		img = new Image(null, string);
+		
 	}
 }

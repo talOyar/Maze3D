@@ -1,5 +1,6 @@
 package view;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -9,6 +10,8 @@ import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Shell;
@@ -16,6 +19,8 @@ import org.eclipse.swt.widgets.Shell;
 import algorithms.mazeGenerators.Directions;
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
+import algorithms.search.Solution;
+import algorithms.search.State;
 
 public class MazeDisplay extends Canvas {
 	
@@ -29,10 +34,18 @@ public class MazeDisplay extends Canvas {
 	int currentLevel;
 	Image wall;
 	Image path;
-	
+	Solution<Position> solution;
+	Character goal;
+	boolean wantHint;
+	Character hint;
+	Image arrowUp;
+	Image arrowDown;
+	Image arrowUpDown;
+	Image winner;
 	//**********************************setters and getters********************************
 
-	public void setMaze(Maze3d maze) {
+	public void setMazeData(Maze3d maze) {
+		wantHint=false;
 		this.maze = maze;
 		startPosition=maze.getStartPosition();
 		goalPosition=maze.getGoalPosition();
@@ -41,9 +54,10 @@ public class MazeDisplay extends Canvas {
 		mazeData=maze.getCrossSectionByX(currentLevel);
 		currentPosition=maze.getStartPosition();
 		character.setPos(startPosition);
-
-	}
-
+		character.setImage("images/leonardo2.png");
+		goal.setImage("images/pizzaslice.jpg");
+		goal.setPos(maze.getGoalPosition());}
+		
 	
 //*****************************Contractor*********************************
 	
@@ -54,12 +68,16 @@ public class MazeDisplay extends Canvas {
 		super(parent, style);
 		
 		// Initialize character
+		goal=new Character();
+		hint=new Character();
 		character=new Character();
 
 		// Initialize images
-		wall= new Image(null, "images/wall.jpg" );
-		path= new Image(null, "images/path.jpg" );
-
+		wall= new Image(null, "images/sewer-wall.png" );
+		arrowUp=new Image(null, "images/uparrow.png" );
+		arrowDown=new Image(null, "images/down.png" );
+		arrowUpDown = new Image(null, "images/updown.png" );
+		winner=new Image(null, "images/winner.jpg");
 		//set window background
 		setBackground(new Color(null,255,255,255));
 
@@ -88,98 +106,57 @@ public class MazeDisplay extends Canvas {
 				          int x=j*w;
 				          int y=i*h;
 				          if(mazeData[i][j]!=0)
-								e.gc.drawImage(wall, 0, 0, wall.getBounds().width, wall.getBounds().height, x, y, w, h);				    
-				          else
-								e.gc.drawImage(path, 0, 0, path.getBounds().width, path.getBounds().height,x, y, w, h);
+								e.gc.drawImage(wall, 0, 0, wall.getBounds().width, wall.getBounds().height, x, y, w, h);
+				          
+				          if(maze.getCellVal(currentLevel+1, i, j)==0)
+								e.gc.drawImage(arrowUp, 0, 0, arrowUp.getBounds().width, arrowUp.getBounds().height, x, y, w, h);
+
+		
+				          if(maze.getCellVal(currentLevel-1, i, j)==0)
+								e.gc.drawImage(arrowDown, 0, 0, arrowDown.getBounds().width, arrowDown.getBounds().height, x, y, w, h);
+				          
+				          if(maze.getCellVal(currentLevel+1, i, j)==0 && maze.getCellVal(currentLevel-1, i, j)==0 )
+								e.gc.drawImage(arrowUpDown, 0, 0, arrowUpDown.getBounds().width, arrowUpDown.getBounds().height, x, y, w, h);
+
 				      }
+				     
+				   character.draw(w, h, e.gc);
 				   
-				  character.draw(w, h, e.gc);
+				   
+				   
+				  if(goal.getPos().x==currentLevel){
+					  goal.draw(w, h, e.gc);}
 				  
+				  if(wantHint){
+						 hint.draw(w, h, e.gc);
+						 wantHint=false;  }
+				  
+				  if(character.getPos().equals(goal.getPos()))
+				  {
+						e.gc.drawImage(winner, 0, 0, winner.getBounds().width, winner.getBounds().height, 0,0, getSize().x, getSize().y);
+
+				  }	  
+				          
 			}
 		}); 
 		
-		
-		this.addKeyListener(new KeyListener() {
-			
-			@Override
-			public void keyReleased(KeyEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void keyPressed(KeyEvent e) {
-				
-				Position pos = character.getPos();
-				
-				switch (e.keyCode) {
-				
-				case SWT.ARROW_RIGHT:
-				
-					character.moveRight();
-					redraw();
-					
-					break;
-				
-				case SWT.ARROW_LEFT:	
-					
-					character.moveLeft();
-					redraw();
-
-					break;
-					
-				case SWT.ARROW_UP:
-					
-					character.moveForward();
-					redraw();
-					
-					break;
-					
-				case SWT.ARROW_DOWN:
-					
-					character.moveBackward();
-					redraw();
-					
-					break;
-					
-				case SWT.PAGE_DOWN:	
-					
-					character.moveDown();
-					currentLevel--;
-					mazeData=maze.getCrossSectionByX(currentLevel);
-					redraw();
-					
-					break;
-					
-				case SWT.PAGE_UP:
-					
-					character.moveUp();
-					currentLevel++;
-					mazeData=maze.getCrossSectionByX(currentLevel);
-					redraw();
-					
-					break;
-			}
-				
-			}
-		});
 	}
 	
-	
-	
-	
-	private void redrawMe() {
-		getDisplay().syncExec(new Runnable() {
+	public void setSolution(Solution<Position> solution) {
+		this.solution=solution;		
+	}
 
-			@Override
-			public void run() {
-				setEnabled(true);
-				redraw();
-			}
-			
-		});
+
+	public void setWantHint(boolean b) {
+		wantHint=b;		
+	}
+
+	public void checkForUpDown(){
+	
 	}
 }
+		
+
 
 
 
