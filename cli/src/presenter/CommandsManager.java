@@ -98,7 +98,7 @@ public class setPropertiesCommand implements Command{
 		
 		XMLEncoder xmlEncoder = null;
 		try {
-			xmlEncoder = new XMLEncoder(new FileOutputStream("properties.xml"));
+			xmlEncoder = new XMLEncoder(new FileOutputStream("resources/properties.xml"));
 			xmlEncoder.writeObject(prop);
 			
 		} catch (FileNotFoundException e) {
@@ -108,7 +108,7 @@ public class setPropertiesCommand implements Command{
 			xmlEncoder.close();
 		}
 
-model.loadXML("properties.xml");	}
+model.loadXML("resources/properties.xml");	}
 	
 }
 
@@ -224,7 +224,9 @@ public class DisplayMazeIsReady implements Command {
 		@Override
 		public void doCommand(String[] args) {
 			try {
+
 				String name = args[0];
+
 				Maze3d maze = model.getMaze(name);
 				view.displayMaze(maze);
 				

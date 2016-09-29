@@ -10,7 +10,20 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 
-
+/**
+ * <h2>PropetiesWindow class<h2>
+ * <p> extends DialogWindow
+ * <p> opens a properties  window when the properties  button is pushed
+ * 
+ * 
+ * @author Tal Oyar & Tomer Cohen
+ * @version 1.0
+ * @since 20-09-2016
+ * 
+ * 
+ * @see DialogWindow
+ *
+ */
 public class PropetiesWindow extends DialogWindow {
 	String generateAlgorithm;
 	String SolveAlgorithm;
@@ -39,10 +52,10 @@ public class PropetiesWindow extends DialogWindow {
 		Button growingTreeRandum=new Button(generateAlgorithms,SWT.RADIO); //generateAlgorithms, SWT.RADIO);
 		growingTreeRandum.setLayoutData(new GridData(SWT.FILL,SWT.NONE, false,false,1, 1));
 		growingTreeRandum.setText("Growing tree by randum");
-		
-		Button simple=new Button(generateAlgorithms,SWT.RADIO); //generateAlgorithms, SWT.RADIO);
-		simple.setLayoutData(new GridData(SWT.FILL,SWT.NONE, false,false,1, 1));
-		simple.setText("simple");
+//		
+//		Button simple=new Button(generateAlgorithms,SWT.RADIO); //generateAlgorithms, SWT.RADIO);
+//		simple.setLayoutData(new GridData(SWT.FILL,SWT.NONE, false,false,1, 1));
+//		simple.setText("simple");
 		
 		
 		Group solveAlgorithms=new Group(shell, SWT.BORDER);
@@ -99,21 +112,22 @@ public class PropetiesWindow extends DialogWindow {
 			}
 		});
 		
-		
-		simple.addSelectionListener(new SelectionListener() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent arg0) {
-				generateAlgorithm="simple";
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		
+//		
+//		simple.addSelectionListener(new SelectionListener() {
+//			
+//			@Override
+//			public void widgetSelected(SelectionEvent arg0) {
+//				generateAlgorithm="simple";
+//			}
+//			
+//			@Override
+//			public void widgetDefaultSelected(SelectionEvent arg0) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//		});
+//		
+//		
 		
 		
 		//solve listeners
@@ -175,9 +189,9 @@ public class PropetiesWindow extends DialogWindow {
 				fd.setText("Load properties");
 				fd.setFilterExtensions(new String[] { "*.xml" });
 				String selected = fd.open();
-				
+				if(selected!=null){
 				setChanged();
-				notifyObservers("load_xml "+selected);
+				notifyObservers("load_xml "+selected);}
 				shell.close();
 			}
 			

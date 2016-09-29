@@ -20,7 +20,7 @@ public class PropertiesLoader {
 	}
 	public PropertiesLoader(){
 		try {
-			XMLDecoder decoder= new XMLDecoder(new FileInputStream("properties.xml"));
+			XMLDecoder decoder= new XMLDecoder(new FileInputStream("resources/properties.xml"));
 			properties=(Properties)decoder.readObject();
 			decoder.close();
 			

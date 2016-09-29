@@ -1,27 +1,30 @@
 package view;
 
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Shell;
-
-import algorithms.mazeGenerators.Directions;
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
-import algorithms.search.State;
 
+/**
+ * <h2>MazeDisplay class<h2>
+ * <p> extends Canvas
+ * <p> this is the game board widget that draws the game
+ * 
+ * 
+ * @author Tal Oyar & Tomer Cohen
+ * @version 1.0
+ * @since 20-09-2016
+ * 
+ * 
+ * @see DialodWindow
+ *
+ */
 public class MazeDisplay extends Canvas {
 	
 	Maze3d maze;
@@ -45,7 +48,6 @@ public class MazeDisplay extends Canvas {
 	//**********************************setters and getters********************************
 
 	public void setMazeData(Maze3d maze) {
-		wantHint=false;
 		this.maze = maze;
 		startPosition=maze.getStartPosition();
 		goalPosition=maze.getGoalPosition();
@@ -54,10 +56,12 @@ public class MazeDisplay extends Canvas {
 		mazeData=maze.getCrossSectionByX(currentLevel);
 		currentPosition=maze.getStartPosition();
 		character.setPos(startPosition);
-		character.setImage("images/leonardo2.png");
-		goal.setImage("images/pizzaslice.jpg");
-		goal.setPos(maze.getGoalPosition());}
-		
+		character.setImage("resources/mikey.png");
+		goal.setImage("resources/goal.png");
+		goal.setPos(maze.getGoalPosition());
+		hint.setImage("resources/pizzahint.png");
+	}
+
 	
 //*****************************Contractor*********************************
 	
@@ -67,19 +71,22 @@ public class MazeDisplay extends Canvas {
 		// canvas const
 		super(parent, style);
 		
+		wantHint=false;
+
 		// Initialize character
 		goal=new Character();
 		hint=new Character();
 		character=new Character();
 
 		// Initialize images
-		wall= new Image(null, "images/sewer-wall.png" );
-		arrowUp=new Image(null, "images/uparrow.png" );
-		arrowDown=new Image(null, "images/down.png" );
-		arrowUpDown = new Image(null, "images/updown.png" );
-		winner=new Image(null, "images/winner.jpg");
+		wall= new Image(null, "resources/wall.png" );
+		arrowUp=new Image(null, "resources/uparrow.png" );
+		arrowDown=new Image(null, "resources/down.png" );
+		arrowUpDown = new Image(null, "resources/updown.png" );
+		winner=new Image(null, "resources/winner.jpg");
+		
 		//set window background
-		setBackground(new Color(null,255,255,255));
+		setBackgroundImage(new Image(null,"resources/cover.jpg"));
 
 		
 		// add a paint handler- drawing the maze and the character
@@ -141,19 +148,23 @@ public class MazeDisplay extends Canvas {
 		}); 
 		
 	}
+	/**
+	 * <p> sets the current maze solution 
+	 * @param solution
+	 */
 	
 	public void setSolution(Solution<Position> solution) {
 		this.solution=solution;		
 	}
 
-
+	/**
+	 * <p> sets the boolean wantHint parameter 
+	 * @param b - a boolean thats indicates if the user wants an hint
+	 */
 	public void setWantHint(boolean b) {
 		wantHint=b;		
 	}
 
-	public void checkForUpDown(){
-	
-	}
 }
 		
 

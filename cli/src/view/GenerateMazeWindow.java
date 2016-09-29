@@ -2,17 +2,25 @@ package view;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-
+/**
+ * <h2>GenerateMazeWindow class<h2>
+ * <p> extends DialogWindow
+ * <p> opens a generate maze window when the generate maze button is pushed
+ * 
+ * 
+ * @author Tal Oyar & Tomer Cohen
+ * @version 1.0
+ * @since 20-09-2016
+ * 
+ * 
+ * @see DialogWindow
+ *
+ */
 public class GenerateMazeWindow extends DialogWindow {
 	
 	

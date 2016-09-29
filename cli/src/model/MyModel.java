@@ -62,6 +62,7 @@ public class MyModel extends Observable implements Model {
 	private Properties properties;	
 	private String generateAlgorithm;
 	private String solveAlgorithm;
+	@SuppressWarnings("unused")
 	private int numOfThreads;
 	private CommonSearcher<Position> deafultSearcher;
 
@@ -106,12 +107,10 @@ public class MyModel extends Observable implements Model {
 					
 		properties=PropertiesLoader.getInstance().getProperties();
 		
-		System.out.println(properties.getNumOfThreads());
 		threadPool = Executors.newFixedThreadPool(properties.getNumOfThreads());
 		generateAlgorithm=properties.getGenerateMazeAlgorithm();
 		solveAlgorithm=properties.getSolveMazeAlgorithm();
-		System.out.println(generateAlgorithm);
-		System.out.println(solveAlgorithm);
+
 		
 		loadSolutions();
 		
@@ -137,7 +136,6 @@ public class MyModel extends Observable implements Model {
 				GrowingTreeGenerator generator=null;
 				SimpleMaze3dGenerator simpleGenerator=null;
 				
-				System.out.println(generateAlgorithm);
 				if(generateAlgorithm.equals("growingTreeByLast"))
 				{
 				 generator =new GrowingTreeGenerator(new ChoseLastCell());
@@ -213,10 +211,11 @@ public class MyModel extends Observable implements Model {
 			}
 		} catch (FileNotFoundException e) {
 				setChanged();
-				notifyObservers("display_message Error while trying to save the solutions into the file!");
+				notifyObservers("display_message Error while trying to save the solution into the file!");
 		} catch (IOException e) {
 			setChanged();
-			notifyObservers("display_message Error while trying to save the solutions into the file!");
+			notifyObservers("display_message Error while trying to save the solution into the file!");
+
 		}finally {
 			try {
 				save.close();
@@ -224,6 +223,7 @@ public class MyModel extends Observable implements Model {
 				
 				setChanged();
 				notifyObservers("display_message Error while trying to close the file!");
+
 			}
 		}
 		
@@ -429,6 +429,7 @@ public void loadSolutions(){
 			return;
 			
 		}
+		
 		}
 		threadPool.submit(new Callable<Solution<Position>>(){ 
 			
@@ -526,7 +527,6 @@ public void loadSolutions(){
 	 *<p> if a thread is still working it will wait until it will be terminated
 	 */
 	public void exit(){
-		SaveSolutions();
 		threadPool.shutdown();
 		boolean terminated=false;
 
@@ -544,6 +544,7 @@ public void loadSolutions(){
 		}
 		
 		if(terminated){
+			SaveSolutions();
 			setChanged();
 			notifyObservers("display_message Program terminated!");
 	}

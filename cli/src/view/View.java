@@ -8,7 +8,6 @@ import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
 import presenter.Command;
-import presenter.Presenter;
 /**
  * <h2>View interface<h2>
  * <p> Holds ten methods to be override

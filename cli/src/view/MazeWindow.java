@@ -1,12 +1,18 @@
 package view;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
@@ -18,13 +24,11 @@ import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
@@ -38,9 +42,23 @@ import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
 import algorithms.search.State;
 import presenter.Command;
-import presenter.Presenter;
 import presenter.Properties;
 
+
+/**
+ * <h2>MazeWindow class<h2>
+ * <p> extends basic window and implements view and java observer interface
+ * <p>This is the general maze window which contains all the widgets
+ * 
+ * @author Tal Oyar & Tomer Cohen
+ * @version 1.0
+ * @since  09-20-2016
+ * 
+ * @see view
+ * @see observer
+ * @see basic window
+ *
+ */
 
 public class MazeWindow extends BasicWindow implements View,Observer {
 
@@ -55,6 +73,7 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 	Properties properties;
 	Label floorLable;
 	Combo mazeList;
+	Clip Playmusic;
     Listener exitListener=new Listener() {    // exit handler
 	
 		@Override
@@ -72,7 +91,12 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 	};
     
     
-    
+    /**
+     * <p>initWidgets class
+     * <p> overrides basicWindow method
+     * <p> initialize all the widgets of the game window
+     * 
+     */
 	
 	@Override
 	protected void initWidgets() {
@@ -88,10 +112,8 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 		
 		 shell.addListener(SWT.Close,exitListener);
 		 
-		  
-		 
-		 
 			 
+		 
 		//****************************buttons********************************
 		
 		
@@ -110,7 +132,7 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 			mazeDisplay=new MazeDisplay(shell, SWT.BORDER);
 			mazeDisplay.setBackground(new Color(null, 255,255,255));
 			//mazeDisplay.setBackgroundImage(new Image(null,"images/cover.jpg"));
-			mazeDisplay.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,6));
+			mazeDisplay.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,7));
 		
 		
 		
@@ -148,6 +170,10 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 		btnSolveMaze.setToolTipText("Click to solve the maze");
 		btnSolveMaze.setEnabled(false);
 		
+		Button btnMusic = new Button(shell, SWT.PUSH|SWT.FILL);
+		btnMusic.setLayoutData(new GridData(SWT.FILL,SWT.NONE, false,false,1, 1));
+		btnMusic.setText("Music");
+		btnMusic.setToolTipText("Click to play some music :)");
 		
 		//exit button
 		
@@ -157,12 +183,13 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 		btnExit.setText("Exit");
 		btnExit.setToolTipText("Click to exit");
 		
-		// 
+		// show which floor the player 
 		floorLable= new Label(shell, SWT.BORDER);
 		floorLable.setText("You are at floor:"+mazeDisplay.currentLevel);
 
+
 		
-		
+	
 		
 		//*************************buttons listeners***************************//
 	
@@ -241,6 +268,7 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 			public void widgetSelected(SelectionEvent arg0) {
 				
 				wantHint=true;
+				
 				setChanged();
 				notifyObservers("solve_maze "+mazeName+ " byGui "+mazeDisplay.characterPos.x+" "+mazeDisplay.characterPos.y+" "+mazeDisplay.characterPos.z);
 								
@@ -279,23 +307,55 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 		
 		
 		
+		btnMusic.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				
+				try {
+					Playmusic = AudioSystem.getClip();
+					
+					AudioInputStream inputStream = AudioSystem.getAudioInputStream(new BufferedInputStream(new FileInputStream("resources/TeenageMutantNinjaTurtles.wav")));
+					Playmusic.open(inputStream);
+					
+					Playmusic.setLoopPoints(0, -1);
+					Playmusic.loop(Clip.LOOP_CONTINUOUSLY);
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}				
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		
 		// exit listener
 		btnExit.addListener(SWT.Selection,exitListener);
 		
-		//listener for mouse scroll for zoom in/out
+		
+		
+		
+		
+		
+		//maze display listener for mouse scroll for zoom in/out
 		
 		mazeDisplay.addMouseWheelListener(new MouseWheelListener() {
 			
 			@Override
 			public void mouseScrolled(MouseEvent mouse) {
 				if((mouse.stateMask & SWT.CONTROL) == SWT.CONTROL) {
-					
+				mazeDisplay.setSize(mazeDisplay.getSize().x + mouse.count, mazeDisplay.getSize().y + mouse.count);
 					
 				}
 			}
 		});
 	
-		
+		//maze display key listener
 	
 		mazeDisplay.addKeyListener(new KeyListener() {
 			
@@ -312,14 +372,14 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 				switch (e.keyCode) {
 				
 				case SWT.ARROW_RIGHT:
-					if(mazeDisplay.characterPos.z+1>0 && maze.getCellVal(mazeDisplay.characterPos.x,mazeDisplay.characterPos.y,mazeDisplay.characterPos.z+1)==0){
+					if(mazeDisplay.characterPos.z+1<maze.getCols() && maze.getCellVal(mazeDisplay.characterPos.x,mazeDisplay.characterPos.y,mazeDisplay.characterPos.z+1)==0){
 					mazeDisplay.character.moveRight();
 					mazeDisplay.redraw();	}
 
 					break;
 				
 				case SWT.ARROW_LEFT:	
-					if(mazeDisplay.characterPos.z-1<maze.getCols() && maze.getCellVal(mazeDisplay.characterPos.x,mazeDisplay.characterPos.y,mazeDisplay.characterPos.z-1)==0){
+					if(mazeDisplay.characterPos.z-1>0 && maze.getCellVal(mazeDisplay.characterPos.x,mazeDisplay.characterPos.y,mazeDisplay.characterPos.z-1)==0){
 					mazeDisplay.character.moveLeft();
 					mazeDisplay.redraw();}
 
@@ -411,7 +471,7 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 				
 				Shell shell=new Shell();
 				shell.setText("Load maze");
-				shell.setSize(300, 250);
+				shell.setSize(250, 150);
 				GridLayout layout = new GridLayout(2, false);
 				shell.setLayout(layout);
 
@@ -421,6 +481,7 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 				Text txtName = new Text(shell, SWT.BORDER);
 				
 				Button loadMazeBtn= new Button(shell, SWT.BORDER);
+				loadMazeBtn.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false, 2, 1));
 				loadMazeBtn.setText("Load");
 
 				shell.open();
@@ -432,6 +493,7 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 							String name=txtName.getText();
 							setChanged();
 							notifyObservers("load_maze "+name+" "+name);
+							shell.close();
 							}
 							
 							@Override
@@ -452,15 +514,15 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 		
 		
 		MenuItem saveMazeBtn= new MenuItem(fileMenu,SWT.BORDER);
-		
 		saveMazeBtn.setText("Save  maze");
+		
 		saveMazeBtn.addSelectionListener(new SelectionListener() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				Shell shell=new Shell();
 				shell.setText("Save maze");
-				shell.setSize(300, 250);
+				shell.setSize(250, 150);
 
 				GridLayout layout = new GridLayout(2, false);
 				shell.setLayout(layout);
@@ -472,6 +534,7 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 				
 				Button saveMazeBtn= new Button(shell, SWT.BORDER);
 				saveMazeBtn.setText("Save");
+				saveMazeBtn.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false, 2, 1));
 				
 				shell.open();
 				saveMazeBtn.addSelectionListener(new SelectionListener() {
@@ -482,6 +545,7 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 							
 							setChanged();
 							notifyObservers("save_maze "+name+" "+name);
+							shell.close();
 							}
 							
 							@Override
@@ -542,15 +606,28 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 		
 	}
 	
-
+	/**
+	 * <p> Start method
+	 * <p>starts the main loop of the basic window
+	 */
+	@Override
+	public void start() {
+		run();		
+	}
 	
-	
+	/**
+	 * <p> getMazeList method
+	 * <> gets an array of strings that  contains all the mazes names
+	 */
 	protected void getMazeList() {
 		setChanged();
 		notifyObservers("get_maze_list");
 	}
 
-
+	/**
+	 *<p> notifyMazeIsReady method
+	 *<p> display a message to the user when the maze that was generated is ready
+	 */
 	@Override
 	public void notifyMazeIsReady(String name) {
 				
@@ -566,7 +643,10 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 		});			
 	}
 
-
+	/**
+	 * <p>displayMessage method
+	 * <p> display a message, in a message box, to the user 
+	 */
 	
 	@Override
 	public void displayMessage(String msg) {
@@ -584,27 +664,11 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 	}
 
 	
-	@Override
-	public void start() {
-		run();		
-	}
+/**
+ * <p>notifySolutionIsReady method
+ * <p> display a message to the user when the solution for the maze is ready
+ */
 
-
-	@Override
-	public void setCommands(HashMap<String, Command> commands) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void displayCrossSection(int[][] maze2d) {
-	}
-
-	@Override
-	public void displayFolders(File[] path) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void notifySolutionIsReady(String name) {
@@ -612,10 +676,13 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 			
 			@Override
 			public void run() {
+				
 				if(!wantHint){
+					
 				MessageBox msg = new MessageBox(shell);
 				msg.setMessage("Solution for the maze: '" + name + "' is ready");
 				msg.open();	
+				
 				}
 				
 				setChanged();
@@ -625,11 +692,16 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 		});					
 	}
 
+	
+	/**
+	 * <p>displayMazeSolution method
+	 * <p> display the maze solution to the user, if the user just want an hint- display an hint in the next move
+	 */
+	
 	@Override
 	public void displayMazeSolution(Solution<Position> solution) {
 		
 		mazeDisplay.setSolution(solution);	
-		System.out.println(solution);
 		ArrayList<State<Position>> solutionStates=solution.getStates();
 		solutionStates.remove(0);
 		
@@ -708,7 +780,10 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 		}
 	}
 
-
+/**
+ * <p> displayMaze  method
+ * <p> set the maze data for the maze display then draw the maze to the user
+ */
 	@Override
 	public void displayMaze(Maze3d maze) {
 		this.mazeName=mazeList.getText();
@@ -720,17 +795,40 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 		
 	}
 
-
+	/**
+	 * <p> update  method
+	 * <p> gets a notification that some changes accrued and pass it to the presenter
+	 */
 	@Override
 	public void update(Observable o, Object arg) {
 		setChanged();
 		notifyObservers(arg);		
 	}
-
+	/**
+	 * sets the array of strings that contains the mazes names to the drop down button 
+	 */
 
 	@Override
 	public void setMazeList(String[] list) {
 		mazeList.setItems(list);		
+	}
+
+	
+	
+	@Override
+	public void setCommands(HashMap<String, Command> commands) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void displayCrossSection(int[][] maze2d) {
+	}
+
+	@Override
+	public void displayFolders(File[] path) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
