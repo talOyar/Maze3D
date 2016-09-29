@@ -111,12 +111,11 @@ public class MyModel extends Observable implements Model {
 		generateAlgorithm=properties.getGenerateMazeAlgorithm();
 		solveAlgorithm=properties.getSolveMazeAlgorithm();
 
-		
 		loadSolutions();
 		
 	}
 	
-/**
+/**S
  * <p> generateMaze method
  * <p> generate a maze in a thread according to the dimensions received from the user 
  *  and add it to an hashMap of mazes with the name entered by the user.
@@ -206,13 +205,16 @@ public class MyModel extends Observable implements Model {
 		try {
 			save=new ObjectOutputStream(new GZIPOutputStream(new FileOutputStream("solutions.dat")));
 			if(mazes!=null && solutions!=null){
-			save.writeObject(mazes);
-			save.writeObject(solutions);			
+				save.writeObject(mazes);
+				save.writeObject(solutions);
+				System.out.println(solutions);
 			}
+			
 		} catch (FileNotFoundException e) {
 				setChanged();
 				notifyObservers("display_message Error while trying to save the solution into the file!");
 		} catch (IOException e) {
+			
 			setChanged();
 			notifyObservers("display_message Error while trying to save the solution into the file!");
 
@@ -233,6 +235,8 @@ public class MyModel extends Observable implements Model {
 @SuppressWarnings("unchecked")
 
 public void loadSolutions(){
+	
+	
 	File file = new File("solutions.dat");
 	if (!file.exists()){
 	setChanged();
@@ -249,15 +253,15 @@ public void loadSolutions(){
 		
 	} catch (FileNotFoundException e) {
 		setChanged();
-		notifyObservers("display_message Error while trying to save the solution into the file!");
+		notifyObservers("display_message Error while trying to load the solution into the file!");
 	}
 	catch (IOException e) {
 		setChanged();
-		notifyObservers("display_message Error while trying to save the solution into the file!");
+		notifyObservers("display_message Error while trying to load the solution into the file!");
 	}
 	catch (ClassNotFoundException e) {
 		setChanged();
-		notifyObservers("display_message Error while trying to save the solution into the file!");
+		notifyObservers("display_message Error while trying to load the solution into the file!");
 	} 
 	finally{
 		try {
@@ -377,7 +381,7 @@ public void loadSolutions(){
 	
 	@Override
 	public void loadMaze(String name, String fileName) {
-		
+
 		try	
 		{
 			MyDecompressorInputStream in = new MyDecompressorInputStream(new FileInputStream(fileName));
@@ -392,6 +396,7 @@ public void loadSolutions(){
 			in.read(arr);
 			in.close();
 			
+					
 			//create a maze using the bytes array constructor
 			Maze3d maze = new Maze3d(arr);
 			

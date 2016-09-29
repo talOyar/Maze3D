@@ -18,6 +18,7 @@ public final int PATH=0;
 public final int WALL=1; 
 
 
+
 public Maze3d(byte[] mazeAsBytes) {
 		int count=0;
 

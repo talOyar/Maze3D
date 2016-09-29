@@ -29,10 +29,9 @@ import algorithms.search.Solution;
  */
 
 public class Demo {
-public static void main(String[] args) {
 	
 
-	//public static void Run(){
+	public static void Run(){
 		
 		GrowingTreeGenerator mg= new GrowingTreeGenerator(new ChoseLastCell());
 		Maze3d maze=(mg.generate(4,4,4));

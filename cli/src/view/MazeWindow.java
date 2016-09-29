@@ -129,10 +129,10 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 			btnGenerateMaze.setToolTipText("Click to generate the maze");
 
 			
-			mazeDisplay=new MazeDisplay(shell, SWT.BORDER);
+			mazeDisplay=new MazeDisplay(shell, SWT.BORDER|SWT.DOUBLE_BUFFERED);
 			mazeDisplay.setBackground(new Color(null, 255,255,255));
 			//mazeDisplay.setBackgroundImage(new Image(null,"images/cover.jpg"));
-			mazeDisplay.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,7));
+			mazeDisplay.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,8));
 		
 		
 		
@@ -170,10 +170,18 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 		btnSolveMaze.setToolTipText("Click to solve the maze");
 		btnSolveMaze.setEnabled(false);
 		
+		// music button
 		Button btnMusic = new Button(shell, SWT.PUSH|SWT.FILL);
 		btnMusic.setLayoutData(new GridData(SWT.FILL,SWT.NONE, false,false,1, 1));
-		btnMusic.setText("Music");
+		btnMusic.setText("Play Music");
 		btnMusic.setToolTipText("Click to play some music :)");
+		
+		//button stop music
+		Button btnStopMusic = new Button(shell, SWT.PUSH|SWT.FILL);
+		btnStopMusic.setLayoutData(new GridData(SWT.FILL,SWT.NONE, false,false,1, 1));
+		btnStopMusic.setText("Stop music");
+		btnStopMusic.setToolTipText("Click to stop the music");
+		
 		
 		//exit button
 		
@@ -306,13 +314,14 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 		
 		
 		
-		
+		//music listener
 		btnMusic.addSelectionListener(new SelectionListener() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 				
 				try {
+					
 					Playmusic = AudioSystem.getClip();
 					
 					AudioInputStream inputStream = AudioSystem.getAudioInputStream(new BufferedInputStream(new FileInputStream("resources/TeenageMutantNinjaTurtles.wav")));
@@ -321,6 +330,30 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 					Playmusic.setLoopPoints(0, -1);
 					Playmusic.loop(Clip.LOOP_CONTINUOUSLY);
 
+				} catch (Exception e) {
+					e.printStackTrace();
+								
+			}	
+			}
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		//music listener
+
+		
+		btnStopMusic.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				
+				try {
+					Playmusic.stop();
+					
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}				
@@ -355,6 +388,7 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 			}
 		});
 	
+		
 		//maze display key listener
 	
 		mazeDisplay.addKeyListener(new KeyListener() {
@@ -707,11 +741,11 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 		
 		if(wantHint)
 		{
-			mazeDisplay.setWantHint(true);
 			if(solutionStates.get(0).getValue().x>mazeDisplay.character.getPos().x)
 			{
 				setChanged();
 				notifyObservers("display_message You need to go up! :)");
+			
 			}
 			if(solutionStates.get(0).getValue().x<mazeDisplay.character.getPos().x)
 			{	
@@ -719,8 +753,9 @@ public class MazeWindow extends BasicWindow implements View,Observer {
 				notifyObservers("display_message You need to go down! :)");
 			}
 			else{
+			mazeDisplay.setWantHint(true);
 			mazeDisplay.hint.setPos(solutionStates.get(0).getValue());
-			mazeDisplay.redraw();}
+			mazeDisplay.redraw();	}
 			
 			wantHint=false;
 			
